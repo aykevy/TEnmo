@@ -2,6 +2,7 @@ package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
 
+//Class Made By Natalie
 public class Transfer {
 
     private int id;

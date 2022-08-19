@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +15,12 @@ public class JdbcTransferDao implements TransferDao{
     //New JDBC to talk to the database and get requested information via SQL
     private JdbcTemplate jdbcTemplate;
 
-    //constructor for JDBC
+    //Constructor for JDBC
     public JdbcTransferDao(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
-
+    //Natalie's Edits For Transfer
     @Override
     public List<Transfer> list(int id) {
         List<Transfer> tranfersList = new ArrayList<>();
@@ -38,7 +38,23 @@ public class JdbcTransferDao implements TransferDao{
         return null;
     }
 
-    //helper method to create the Account Object from rowset data.
+    //Kevin's Edits During Tech Session
+    @Override
+    public void withdraw(int id, int accountId, BigDecimal withdrawAmount)
+    {
+        String sql = "UPDATE account SET balance = balance - ? WHERE user_id = ? AND account_id = ?";
+        jdbcTemplate.update(sql, withdrawAmount, id, accountId);
+    }
+
+    //Kevin's Edits During Tech Session
+    @Override
+    public void deposit(int id, int accountId, BigDecimal depositAmount)
+    {
+        String sql = "UPDATE account SET balance = balance + ? WHERE user_id = ? AND account_id = ?";
+        jdbcTemplate.update(sql, depositAmount, id, accountId);
+    }
+
+    //Helper method to create the account object using row set data.
     public Transfer mapTransferRowSet(SqlRowSet rs){
         Transfer transfer = new Transfer();
         transfer.setId(rs.getInt("id"));

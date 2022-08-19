@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 @Component
@@ -20,6 +21,7 @@ public class JdbcAccountDao implements AccountDao{
     }
 
 
+    //Jacob's edit during our first session
     @Override
     //Overide the interface and request data via SQL
     public List<Account> list(int id) {
