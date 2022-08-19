@@ -103,7 +103,7 @@ public class App {
         if(transfers != (null)) {
             for (Transfer transfer : transfers) {
                 if (transfer.getAmount() != null) {
-                    System.out.println(transfer.getAccountFrom() + "  " + transfer.getAccountTo() + "          " + transfer.getAmount());
+                    System.out.println(transfer.getId() + "  " + (transfer.getId() == 1 ? "To: " + transfer.getAccountTo() :  "From: " +transfer.getAccountFrom()) + "          " + transfer.getAmount());
                 } else System.out.println("No current transfers in the system.");
             }
         }
