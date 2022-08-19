@@ -2,6 +2,7 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -98,7 +99,14 @@ public class App {
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+        List<Transfer> transfers = accountService.getTransactions(currentUser.getUser());
+        if(transfers != (null)) {
+            for (Transfer transfer : transfers) {
+                if (transfer.getAmount() != null) {
+                    System.out.println(transfer.getAccountFrom() + "  " + transfer.getAccountTo() + "          " + transfer.getAmount());
+                } else System.out.println("No current transfers in the system.");
+            }
+        }
 	}
 
 	private void viewPendingRequests() {
