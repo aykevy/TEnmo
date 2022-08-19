@@ -101,9 +101,14 @@ public class App {
 		// TODO Auto-generated method stub
         List<Transfer> transfers = accountService.getTransactions(currentUser.getUser());
         if(transfers != (null)) {
+            System.out.println("---------------------------------------------");
+            System.out.println("Transfers");
+            System.out.println("ID                 From/To           Amount  ");
+            System.out.println("---------------------------------------------");
             for (Transfer transfer : transfers) {
                 if (transfer.getAmount() != null) {
-                    System.out.println(transfer.getId() + "  " + (transfer.getId() == 1 ? "To: " + transfer.getAccountTo() :  "From: " +transfer.getAccountFrom()) + "          " + transfer.getAmount());
+                    System.out.println(transfer.getId() + "  " + (transfer.getId() == 1 ? "To: " + transfer.getAccountTo() :  "From: " +
+                            transfer.getAccountFrom()) + "         $ " + transfer.getAmount());
                 } else System.out.println("No current transfers in the system.");
             }
         }
