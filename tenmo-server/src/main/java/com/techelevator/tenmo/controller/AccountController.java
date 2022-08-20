@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 public class AccountController {
-    //Controller which recieves information from Account Service and then speaks to DAO to get data.
+    //Controller which receives information from Account Service and then speaks to DAO to get data.
     private final AccountDao accountDao;
 
     public AccountController(AccountDao accountDao) {

@@ -45,6 +45,9 @@ public class ConsoleService {
         System.out.println("0: Exit");
         System.out.println();
     }
+    public void printAvailableAccounts(){
+
+    }
 
     public UserCredentials promptForCredentials() {
         String username = promptForString("Username: ");

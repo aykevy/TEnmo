@@ -90,6 +90,8 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
+        consoleService.printAvailableAccounts();
+        consoleService.promptForInt("");
 		List<Account> accounts = accountService.getAccounts(currentUser.getUser());
         for (Account account : accounts) {
             System.out.println(account.getAccountId() + "          " +   account.getBalance());
