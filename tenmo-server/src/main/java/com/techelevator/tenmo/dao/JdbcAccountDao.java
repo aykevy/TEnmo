@@ -4,8 +4,10 @@ import com.techelevator.tenmo.model.Account;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 @Component
@@ -17,6 +19,9 @@ public class JdbcAccountDao implements AccountDao{
     public JdbcAccountDao(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
+
+
+    //Jacob's edit during our first session
     @Override
     //Overide the interface and request data via SQL
     public List<Account> list(int id) {
@@ -33,6 +38,8 @@ public class JdbcAccountDao implements AccountDao{
         }
         return accountsList;
     }
+
+
     //helper method to create the Account Object from rowset data.
     public Account mapAccountRowSet(SqlRowSet rs){
         Account account = new Account();

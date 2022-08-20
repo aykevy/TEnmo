@@ -1,0 +1,4 @@
+2022-08-19T11:56:38.7396901 401 : [no body]
+2022-08-19T16:16:36.9344613 400 : [{"timestamp":"2022-08-19T21:16:36.903+00:00","status":400,"error":"Bad Request","message":"User registration failed.","path":"/register"}]
+2022-08-19T17:31:00.3719328 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2022-08-19T17:31:07.7970986 I/O error on POST request for "http://localhost:8080/register": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
