@@ -95,9 +95,15 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-		List<Account> accounts = accountService.getAccounts(currentUser.getUser());
-        for (Account account : accounts) {
-            System.out.println(account.getAccountId() + "          " +   account.getBalance());
+        //Get a list of the users accounts, if the user has multiple accounts prompt to pick a specific account.
+        List<Account> accounts = accountService.getAccounts(currentUser.getUser());
+
+        if (accountService.hasMultipleAccounts(accounts)){
+            consoleService.printAvailableAccounts(accounts);
+            int selection = consoleService.promptForInt("Select the Account to view its balance");
+            consoleService.displayBalanceForAccount(accounts.get(selection));
+        } else {
+            consoleService.displayBalanceForAccount(accounts.get(0));
         }
 	}
 
