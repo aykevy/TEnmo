@@ -154,7 +154,6 @@ public class App {
         String answerId = userInput.nextLine();
         try
         {
-            System.out.println("START HERE");
             Integer enteredId = Integer.parseInt(answerId);
             System.out.println("How much do you want to send to user: " + enteredId + " ?");
             BigDecimal answerAmount = userInput.nextBigDecimal();
@@ -176,20 +175,18 @@ public class App {
             //statusId, 1 = pending, 2 = approved, 3 = rejected
             transfer.setTypeId(1);
             transfer.setStatusId(2);
-            //transfer.setAccountFrom(userAccount.getAccountId());
-            //transfer.setAccountTo(transferAccount.getAccountId());
+            transfer.setAccountFrom(userAccount.getAccountId());
+            transfer.setAccountTo(transferAccount.getAccountId());
             transfer.setAmount(answerAmount);
 
-            Transfer transferWithID = transferService.addTransfer(transfer);
-            System.out.print("TRANSFER SUCESSSFUL, END FOR NOW");
+
+            Transfer transferWithGeneratedID = transferService.add(transfer);
+            System.out.println(transferWithGeneratedID.getId());
+            System.out.println(transferWithGeneratedID);
+            System.out.print("TRANSFER OBJECT WITH GENERATED ID SUCCESSFUL, END FOR NOW");
 
 
-
-
-
-
-
-            //DO THE ACTUAL TRANSFER
+            //DO THE ACTUAL TRANSFER NEXT
             //transferService.transfer(userAccount, transferModel, true);
 
 

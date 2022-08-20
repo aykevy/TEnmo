@@ -38,9 +38,9 @@ public class TransferService
         return success;
     }
 
-    public Transfer addTransfer(Transfer newTransfer) {
+    public Transfer add(Transfer newTransfer) {
         HttpEntity<Transfer> entity = createEntityTransfer(newTransfer);
-        Transfer returnedTransfer= null;
+        Transfer returnedTransfer = null;
         try
         {
             returnedTransfer = restTemplate.postForObject(BASE_URL + "transfer", entity, Transfer.class);
@@ -51,17 +51,6 @@ public class TransferService
         }
         return returnedTransfer;
     }
-
-    /*
-    public Transfer createTransfer(int typeId, int statusId, int accountFrom, int accountTo, BigDecimal amount)
-    {
-        //int id will be automatically created
-        //typeId 1,  = request, 2 = receive
-        //statusId, 1 = pending, 2 = approved, 3 = rejected
-
-    }
-    */
-
 
     //Helper method to create entities.
     private HttpEntity<Transfer> createEntityTransfer(Transfer transfer) {
