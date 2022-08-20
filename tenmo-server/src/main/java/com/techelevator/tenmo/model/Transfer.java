@@ -1,14 +1,25 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class Transfer {
 
     private int id;
+
+    @Positive
     private int typeId;
+
+    @Positive
     private int statusId;
+
+    @Positive
     private int accountFrom;
+
+    @Positive
     private int accountTo;
+
+    @Positive
     private BigDecimal amount;
 
     public int getId() {

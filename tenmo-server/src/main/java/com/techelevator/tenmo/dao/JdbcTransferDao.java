@@ -54,6 +54,18 @@ public class JdbcTransferDao implements TransferDao{
         jdbcTemplate.update(sql, depositAmount, id, accountId);
     }
 
+    @Override
+    public Transfer add(Transfer transfer)
+    {
+        String sql = "INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES(?, ?, ?, ?, ?) RETURNING transfer_id";
+        int id = jdbcTemplate.update(sql, Integer.class, transfer.getTypeId(), transfer.getStatusId(), transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+        transfer.setId(id);
+        return transfer;
+    }
+
+
+
     //Helper method to create the account object using row set data.
     public Transfer mapTransferRowSet(SqlRowSet rs){
         Transfer transfer = new Transfer();

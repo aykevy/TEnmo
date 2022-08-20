@@ -11,4 +11,5 @@ public interface TransferDao {
     List<Transfer> list(int id);
     void withdraw(int id, int accountId, BigDecimal withdrawAmount);
     void deposit(int id, int accountId, BigDecimal withdrawAmount);
+    Transfer add(Transfer transfer);
 }

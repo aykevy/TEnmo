@@ -148,32 +148,39 @@ public class App {
         String answerId = userInput.nextLine();
         try
         {
+            System.out.println("START HERE");
             Integer enteredId = Integer.parseInt(answerId);
             System.out.println("How much do you want to send to user: " + enteredId + " ?");
             BigDecimal answerAmount = userInput.nextBigDecimal();
 
-            //Current User Account
-            List<Account> userAccounts = accountService.getAccounts(currentUser.getUser());
-            Account userAccount = null;
-            if (userAccounts.size() == 1)
-            {
-                userAccount = userAccounts.get(0);
-            }
+            //Current User Account, currentUser = AuthenticatedUser
+            List<Account> currentUserAccounts = accountService.getAccounts(currentUser.getUser());
+            Account userAccount = currentUserAccounts.get(0);
 
             //Target Account For Transfer
-            User targetTransferUser = userService.getUser(Integer.parseInt(answerId));
+            User targetTransferUser = userService.getUser(enteredId);
             List<Account> transferUserAccounts = accountService.getAccounts(targetTransferUser);
-            Account transferAccount = null;
-            if (transferUserAccounts.size() == 1)
-            {
-                transferAccount = userAccounts.get(0);
-            }
-
-            //CONTINUE FORM HERE
+            Account transferAccount = transferUserAccounts.get(0);
 
             //HERE CREATE AND DOCUMENT THIS CURRENT TRANSFER
 
-            //transferService.createTransfer(
+            Transfer transfer = new Transfer();
+            //int id will be automatically created
+            //typeId 1 = request, 2 = receive
+            //statusId, 1 = pending, 2 = approved, 3 = rejected
+            transfer.setTypeId(1);
+            transfer.setStatusId(2);
+            //transfer.setAccountFrom(userAccount.getAccountId());
+            //transfer.setAccountTo(transferAccount.getAccountId());
+            transfer.setAmount(answerAmount);
+
+            Transfer transferWithID = transferService.addTransfer(transfer);
+            System.out.print("TRANSFER SUCESSSFUL, END FOR NOW");
+
+
+
+
+
 
 
             //DO THE ACTUAL TRANSFER

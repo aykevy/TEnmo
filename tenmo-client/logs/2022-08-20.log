@@ -1,0 +1,12 @@
+2022-08-20T13:15:49.9248105 401 : [no body]
+2022-08-20T13:26:45.2896263 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2022-08-20T13:27:07.0775488 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2022-08-20T13:27:21.9194554 I/O error on POST request for "http://localhost:8080/register": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2022-08-20T13:48:32.068619 400 : [{"timestamp":"2022-08-20T18:48:32.038+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='transfer'. Error count: 2","errors":[{"codes":["Positive.transfer.accountFrom",... (908 bytes)]
+2022-08-20T13:57:30.0896981 400 : [{"timestamp":"2022-08-20T18:57:30.061+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='transfer'. Error count: 2","errors":[{"codes":["Positive.transfer.accountTo","P... (908 bytes)]
+2022-08-20T13:59:23.5636947 400 : [{"timestamp":"2022-08-20T18:59:23.537+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='transfer'. Error count: 2","errors":[{"codes":["Positive.transfer.accountTo","P... (908 bytes)]
+2022-08-20T14:03:48.1275101 400 : [{"timestamp":"2022-08-20T19:03:48.111+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='transfer'. Error count: 2","errors":[{"codes":["Positive.transfer.accountTo","P... (908 bytes)]
+2022-08-20T14:11:30.5742512 400 : [{"timestamp":"2022-08-20T19:11:30.543+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='transfer'. Error count: 2","errors":[{"codes":["Positive.transfer.accountFrom",... (908 bytes)]
+2022-08-20T14:12:22.9469229 400 : [{"timestamp":"2022-08-20T19:12:22.930+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='transfer'. Error count: 2","errors":[{"codes":["Positive.transfer.accountFrom",... (908 bytes)]
+2022-08-20T14:13:35.1641147 401 : [no body]
+2022-08-20T14:13:42.4340015 400 : [{"timestamp":"2022-08-20T19:13:42.428+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='transfer'. Error count: 2","errors":[{"codes":["Positive.transfer.accountTo","P... (908 bytes)]
