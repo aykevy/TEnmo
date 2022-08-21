@@ -48,8 +48,9 @@ public class ConsoleService {
         System.out.println("0: Exit");
         System.out.println();
     }
-    public void printAvailableAccounts(List<Account> accounts){
-        if(accounts.size() > 1) {
+
+    public void printAvailableAccounts(List<Account> accounts) {
+        if (accounts.size() > 1) {
             for (Account account : accounts) {
                 int count = 1;
                 System.out.println("The following accounts are available:");
@@ -57,11 +58,14 @@ public class ConsoleService {
             }
         }
     }
-    public void displayBalanceForAccount(Account account){
-        System.out.println("**************************");
-        System.out.println("*Account number: " + account.getAccountId() + "*");
-        System.out.println("*Total Balance: " + account.getBalance() + "*");
-        System.out.println("**************************");
+
+    public void displayBalanceForAccount(Account account) {
+        String accountPrint = "*Account Number: " + account.getAccountId()+ "*";
+        String balancePrint = "*Total Balance: " + account.getBalance() + "*";
+        printStars(accountPrint, balancePrint);
+        System.out.println(accountPrint);
+        System.out.println(balancePrint);
+        printStars(accountPrint, balancePrint);
     }
 
     public UserCredentials promptForCredentials() {
@@ -104,5 +108,26 @@ public class ConsoleService {
 
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
+    }
+
+    private void printStars(String account, String balance) {
+        if (account.length() > balance.length()) {
+            for (int i = 0; i < account.length()+1; i++) {
+                if (i == account.length()) {
+                    System.out.println("*");
+                } else {
+                    System.out.print("*");
+                }
+
+            }
+        } else {
+            for (int i = 0; i < balance.length()+1; i++) {
+                if (i == balance.length()) {
+                    System.out.println("*");
+                } else {
+                    System.out.print("*");
+                }
+            }
+        }
     }
 }
