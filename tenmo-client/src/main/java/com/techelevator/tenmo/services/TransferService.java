@@ -10,6 +10,8 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+
 public class TransferService
 {
     //Init restTemplate to call a request from the controller.
@@ -36,10 +38,37 @@ public class TransferService
         return success;
     }
 
+    public Transfer add(Transfer newTransfer) {
+        HttpEntity<Transfer> entity = createEntityTransfer(newTransfer);
+        Transfer returnedTransfer = null;
+        try
+        {
+            returnedTransfer = restTemplate.postForObject(BASE_URL + "transfer", entity, Transfer.class);
+        }
+        catch (RestClientResponseException | ResourceAccessException e)
+        {
+            BasicLogger.log(e.getMessage());
+        }
+        return returnedTransfer;
+    }
+    public Transfer createNewTransfer(int tranType, int status,int fromID,int toID,BigDecimal transferAmount){
+        Transfer transfer = new Transfer();
+        //int id will be automatically created
+        //typeId 1 = request, 2 = receive
+        //statusId, 1 = pending, 2 = approved, 3 = rejected
+        transfer.setTypeId(tranType);
+        transfer.setStatusId(status);
+        transfer.setAccountFrom(fromID);
+        transfer.setAccountTo(toID);
+        transfer.setAmount(transferAmount);
+        return transfer;
+    }
+
     //Helper method to create entities.
     private HttpEntity<Transfer> createEntityTransfer(Transfer transfer) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new HttpEntity<>(transfer, headers);
     }
+
 }

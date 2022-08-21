@@ -27,7 +27,7 @@ public class UserService
     //Newest edit for single user
     public User getUser(int id)
     {
-        return restTemplate.getForObject(BASE_URL + id, User.class);
+        return restTemplate.getForObject(BASE_URL + "user/" + id, User.class);
     }
 
     private HttpEntity<User> createEntity(User user)

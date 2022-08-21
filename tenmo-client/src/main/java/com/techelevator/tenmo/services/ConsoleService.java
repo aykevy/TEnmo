@@ -2,10 +2,12 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import javax.swing.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -105,9 +107,35 @@ public class ConsoleService {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
     }
+    public void getUserList(List<User> users)
+    {
+        List<Integer> userIds = new ArrayList<>();
+
+        System.out.println("Users ID        User Name");
+        System.out.println("------------------------------");
+        for (User user : users)
+        {
+            System.out.println(user.getId() + "          " + user.getUsername());
+            userIds.add(Math.toIntExact(user.getId()));
+        }
+    }
+    public void printTransHistory(int id, int account, BigDecimal amount,Boolean isFrom){
+        if (isFrom) {
+            System.out.println(id + "  " + "To:    " + account + "         $ " + amount);
+        } else{
+            System.out.println(id + "  " + "From:    " + account + "         $ " + amount);
+        }
+    }
+
 
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
+    }
+    public void printHistoryHeader(){
+        System.out.println("---------------------------------------------");
+        System.out.println("Transfer");
+        System.out.println("ID                 From/To           Amount  ");
+        System.out.println("---------------------------------------------");
     }
 
     private void printStars(String account, String balance) {

@@ -6,6 +6,7 @@ import com.techelevator.tenmo.model.Transfer;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 
 @RestController
@@ -30,4 +31,12 @@ public class TransferController
     {
         transferDao.deposit(id, accountId, transfer.getAmount());
     }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(path = "transfer", method = RequestMethod.POST)
+    public Transfer add(@Valid @RequestBody Transfer transfer)
+    {
+        return transferDao.add(transfer);
+    }
+
 }

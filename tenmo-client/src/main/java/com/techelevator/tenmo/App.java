@@ -17,7 +17,9 @@ public class App {
 
     private AuthenticatedUser currentUser;
     private final AccountService accountService = new AccountService();
-
+    private final int TRANSFER_PENDING = 1;
+    private final int TRANSFER_SUCCESS = 2;
+    private final int TRANSFER_REJECT = 3;
     //new
     private final UserService userService = new UserService();
 
@@ -112,15 +114,14 @@ public class App {
 		// TODO Auto-generated method stub
         List<Transfer> transfers = accountService.getTransactions(currentUser.getUser());
         if(transfers != (null)) {
-            System.out.println("---------------------------------------------");
-            System.out.println("Transfers");
-            System.out.println("ID                 From/To           Amount  ");
-            System.out.println("---------------------------------------------");
+            consoleService.printHistoryHeader();
             for (Transfer transfer : transfers) {
-                if (transfer.getAmount() != null) {
-                    System.out.println(transfer.getId() + "  " + (transfer.getId() == 1 ? "To:    " + transfer.getAccountTo() :  "From: " +
-                            transfer.getAccountFrom()) + "         $ " + transfer.getAmount());
-                } else System.out.println("No current transfers in the system.");
+                if (transfer.getAmount() != null && transfer.getStatusId() != TRANSFER_PENDING) {
+                    boolean isFrom = (transfer.getId() == 1);
+                    consoleService.printTransHistory(transfer.getId(),(transfer.getId() == 1 ? transfer.getAccountTo() : transfer.getAccountFrom()),transfer.getAmount(),isFrom);
+                } else {
+                    System.out.println("No current transfers in the system.");
+                }
             }
         }
 	}
@@ -130,59 +131,36 @@ public class App {
 		
 	}
 
-    //Kevin's Edits, Helper Function For User List (TO BE MOVED LATER)
-    private List<Integer> getUserList()
-    {
-        List<User> users = userService.getUsers();
-        List<Integer> userIds = new ArrayList<>();
-
-        System.out.println("Users ID        User Name");
-        System.out.println("------------------------------");
-        for (User user : users)
-        {
-            System.out.println(user.getId() + "          " + user.getUsername());
-            userIds.add(Math.toIntExact(user.getId()));
-        }
-        return userIds;
-    }
 
     //MAIN FUNCTION, Still Working On It
 	private void sendBucks() {
-        List<Integer> userIds = getUserList();
-        System.out.println("Enter ID of user you are sending to (0 to cancel)");
-        Scanner userInput = new Scanner(System.in);
-        String answerId = userInput.nextLine();
+        //Prompt user to pick a transfer to from list.
+        consoleService.getUserList(userService.getUsers());
+        int enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
         try
         {
-            Integer enteredId = Integer.parseInt(answerId);
-            System.out.println("How much do you want to send to user: " + enteredId + " ?");
-            BigDecimal answerAmount = userInput.nextBigDecimal();
+            //Get a Big Decimal from the user
+            BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
 
-            //Current User Account
-            List<Account> userAccounts = accountService.getAccounts(currentUser.getUser());
-            Account userAccount = null;
-            if (userAccounts.size() == 1)
-            {
-                userAccount = userAccounts.get(0);
-            }
+            //Current User Account, currentUser = AuthenticatedUser
+            List<Account> currentUserAccounts = accountService.getAccounts(currentUser.getUser());
+            Account userAccount = currentUserAccounts.get(0);
 
             //Target Account For Transfer
-            User targetTransferUser = userService.getUser(Integer.parseInt(answerId));
+            User targetTransferUser = userService.getUser(enteredId);
             List<Account> transferUserAccounts = accountService.getAccounts(targetTransferUser);
-            Account transferAccount = null;
-            if (transferUserAccounts.size() == 1)
-            {
-                transferAccount = userAccounts.get(0);
-            }
-
-            //CONTINUE FORM HERE
+            Account transferAccount = transferUserAccounts.get(0);
 
             //HERE CREATE AND DOCUMENT THIS CURRENT TRANSFER
+            //Use Transfer services to create a new transfer
+            Transfer transfer = transferService.createNewTransfer(1,2, userAccount.getAccountId(),transferAccount.getAccountId(),answerAmount);
+            Transfer transferWithGeneratedID = transferService.add(transfer);
+            System.out.println(transferWithGeneratedID.getId());
+            System.out.println(transferWithGeneratedID);
+            System.out.print("TRANSFER OBJECT WITH GENERATED ID SUCCESSFUL, END FOR NOW");
 
-            //transferService.createTransfer(
 
-
-            //DO THE ACTUAL TRANSFER
+            //DO THE ACTUAL TRANSFER NEXT
             //transferService.transfer(userAccount, transferModel, true);
 
 

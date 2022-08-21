@@ -1,0 +1,1 @@
+2022-08-21T09:04:38.3965832 500 : [{"timestamp":"2022-08-21T14:04:38.373+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; ERROR: new row for relation \"transfer\" violates check constraint \"ck_... (536 bytes)]
