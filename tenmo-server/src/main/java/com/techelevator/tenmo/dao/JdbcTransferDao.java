@@ -31,17 +31,21 @@ public class JdbcTransferDao implements TransferDao{
 
     //Natalie's Edits For Transfer
     @Override
-    public List<Transfer> list(int id) {
+    public List<Transfer> getTransferTransactions(int id) {
         List<Transfer> tranfersList = new ArrayList<>();
-        String sql = "SELECT * " +
+        System.out.println("I'm in jdbcTransfer");
+        String sql = "SELECT transfer_id, account_from, account_to, amount, transfer_type_id, transfer_status_id " +
                 "FROM transfer " +
-                "WHERE accountFrom = ? || accountTo == ?";
+                "WHERE account_from = ? " +
+                "OR account_to = ? ";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
         //As long as there were results, add to list to be returned.
+        System.out.println("size of results "+ results);
         if(results != null) {
             while (results.next()) {
                 tranfersList.add(mapTransferRowSet(results));
             }
+
         return tranfersList;
     }
         return null;
@@ -92,11 +96,12 @@ public class JdbcTransferDao implements TransferDao{
     //Helper method to create the account object using row set data.
     public Transfer mapTransferRowSet(SqlRowSet rs){
         Transfer transfer = new Transfer();
-        transfer.setId(rs.getInt("id"));
-        transfer.setTypeId(rs.getInt("type"));
-        transfer.setStatusId(rs.getInt("status"));
+        transfer.setId(rs.getInt("transfer_id"));
+        transfer.setTypeId(rs.getInt("transfer_type_id"));
+        transfer.setStatusId(rs.getInt("transfer_status_id"));
         transfer.setAccountFrom(rs.getInt("account_from"));
         transfer.setAccountTo(rs.getInt("account_to"));
+        transfer.setAmount(rs.getBigDecimal("amount"));
         return transfer;
     }
 }

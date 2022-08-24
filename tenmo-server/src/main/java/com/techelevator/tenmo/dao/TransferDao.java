@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TransferDao {
 
-    List<Transfer> list(int id);
+    List<Transfer> getTransferTransactions(int id);
     void withdraw(int id, int accountId, BigDecimal withdrawAmount);
     void deposit(int id, int accountId, BigDecimal withdrawAmount);
     Transfer add(Transfer transfer);

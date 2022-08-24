@@ -120,6 +120,7 @@ public class ConsoleService {
         }
     }
     public void printTransHistory(int id, int account, BigDecimal amount,Boolean isFrom){
+        System.out.println("IsFrom");
         if (isFrom) {
             System.out.println(id + "  " + "To:    " + account + "         $ " + amount);
         } else{

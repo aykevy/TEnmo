@@ -1,9 +1,10 @@
 package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 //Class Made By Natalie
-public class Transfer {
+public class Transfer <Transfer> {
 
     private int id;
     private int typeId;

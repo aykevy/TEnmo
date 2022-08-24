@@ -24,4 +24,5 @@ public class AccountController {
         return accountDao.list(id);
 
     }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 public class TransferController
@@ -37,6 +38,13 @@ public class TransferController
     public Transfer add(@Valid @RequestBody Transfer transfer)
     {
         return transferDao.add(transfer);
+    }
+
+    //@ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "{id}/{accountId}/transfer", method = RequestMethod.GET)
+    public List<Transfer> getTransferTransactions(@PathVariable int id, @PathVariable int accountId){
+        System.out.println("here in controller");
+        return transferDao.getTransferTransactions(accountId);
     }
 
 }

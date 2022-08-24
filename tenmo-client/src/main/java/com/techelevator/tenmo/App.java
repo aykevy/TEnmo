@@ -1,6 +1,7 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.*;
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
@@ -111,14 +112,28 @@ public class App {
 
     //Natalie's Edits
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-        List<Transfer> transfers = accountService.getTransactions(currentUser.getUser());
-        if(transfers != (null)) {
+        // TODO Auto-generated method stub
+       int accId = 0;
+        List<Transfer> transfer = new ArrayList<>();
+        List<Account> account = accountService.getAccounts(currentUser.getUser());
+        for (Account accounts : account){
+           accId = accounts.getAccountId();
+        }
+        User user  = currentUser.getUser();
+        Long id = user.getId();
+        int useID = id.intValue();
+        System.out.println("this is id: "+id + " Int value "+ useID + " acctid "+accId);
+        transfer = transferService.getTransferTransactions(useID,accId);
+        System.out.println("before if " + transfer);
+        if(transfer != (null)) {
             consoleService.printHistoryHeader();
-            for (Transfer transfer : transfers) {
-                if (transfer.getAmount() != null && transfer.getStatusId() != TRANSFER_PENDING) {
-                    boolean isFrom = (transfer.getId() == 1);
-                    consoleService.printTransHistory(transfer.getId(),(transfer.getId() == 1 ? transfer.getAccountTo() : transfer.getAccountFrom()),transfer.getAmount(),isFrom);
+            for (Transfer transferlist : transfer) {
+                System.out.println("before If");
+                if (transferlist.getAmount() != null && transferlist.getStatusId() != TRANSFER_PENDING) {
+                    System.out.println("before isFrom");
+                    boolean isFrom = (transferlist.getId() == 1);
+                    consoleService.printTransHistory(transferlist.getId(),(transferlist.getId() == 1 ? transferlist.getAccountTo() : transferlist.getAccountFrom()),transferlist.getAmount(),isFrom);
+                    System.out.println("console services");
                 } else {
                     System.out.println("No current transfers in the system.");
                 }

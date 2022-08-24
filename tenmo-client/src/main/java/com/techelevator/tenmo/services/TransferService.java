@@ -1,8 +1,10 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,10 +12,19 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
 
 public class TransferService
 {
+
+
     //Init restTemplate to call a request from the controller.
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -50,6 +61,7 @@ public class TransferService
             BasicLogger.log(e.getMessage());
         }
         return returnedTransfer;
+
     }
     public Transfer createNewTransfer(int tranType, int status,int fromID,int toID,BigDecimal transferAmount){
         Transfer transfer = new Transfer();
@@ -71,4 +83,14 @@ public class TransferService
         return new HttpEntity<>(transfer, headers);
     }
 
+
+    public List<Transfer> getTransferTransactions(int useId, int accId) {
+
+    //base url/useId/accId/transfer
+        System.out.println("in transfer service");
+       Transfer[]  result = restTemplate.getForObject(BASE_URL + useId+"/"+ accId+"/transfer", Transfer[].class);
+
+        return Arrays.asList(result);
+
+    }
 }
