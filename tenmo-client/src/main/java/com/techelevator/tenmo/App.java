@@ -117,7 +117,7 @@ public class App {
         transferMenu(TRANSFER_SUCCESS);
     }
 
-<<<<<<< HEAD
+
     private void approveRequests()
     {
         //After viewing your pending requests, you may approve requests here
@@ -190,56 +190,11 @@ public class App {
         }
 	}
 
-=======
     private void viewPendingRequests() {
         //Calls the transfer Menu; will print the transfers selected and then prompt to view more details.
         transferMenu(TRANSFER_PENDING);
     }
 
-    //MAIN FUNCTION, Still Working On It
-    private void sendBucks() {
-        //Prompt user to pick a transfer to from list.
-        consoleService.getUserList(userService.getUsers());
-        int enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
-        try {
-            //Get a Big Decimal from the user
-            BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
-
-            //Current User Account, currentUser = AuthenticatedUser
-            List<Account> currentUserAccounts = accountService.getAccounts(currentUser.getUser());
-            Account userAccount = currentUserAccounts.get(0);
-
-            //Target Account For Transfer
-            User targetTransferUser = userService.getUser(enteredId);
-            List<Account> transferUserAccounts = accountService.getAccounts(targetTransferUser);
-            Account transferAccount = transferUserAccounts.get(0);
-
-            //HERE CREATE AND DOCUMENT THIS CURRENT TRANSFER
-            //Use Transfer services to create a new transfer
-            Transfer transfer = transferService.createNewTransfer(1, 2, userAccount.getAccountId(), transferAccount.getAccountId(), answerAmount);
-            Transfer transferWithGeneratedID = transferService.add(transfer);
-            System.out.println(transferWithGeneratedID.getId());
-            System.out.println(transferWithGeneratedID);
-            System.out.print("TRANSFER OBJECT WITH GENERATED ID SUCCESSFUL, END FOR NOW");
-
-
-            //DO THE ACTUAL TRANSFER NEXT
-            //transferService.transfer(userAccount, transferModel, true);
-
-
-        } catch (Exception e) {
-            e.getMessage();
-        }
-
-    }
-
-    private void requestBucks() {
-        // TODO Auto-generated method stub
-
-    }
-
-
->>>>>>> 17d6443e26c057064ba6d5a39737ff5faf76e93f
     public String convertStatus(int status) {
         String newStatus = "";
         switch (status) {
