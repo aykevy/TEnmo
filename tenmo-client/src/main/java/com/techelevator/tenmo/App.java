@@ -39,6 +39,7 @@ public class App {
             mainMenu();
         }
     }
+
     private void loginMenu() {
         int menuSelection = -1;
         while (menuSelection != 0 && currentUser == null) {
@@ -97,63 +98,36 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance() {
+    private void viewCurrentBalance() {
         //Get a list of the users accounts, if the user has multiple accounts prompt to pick a specific account.
         List<Account> accounts = accountService.getAccounts(currentUser.getUser());
 
-        if (accountService.hasMultipleAccounts(accounts)){
+        if (accountService.hasMultipleAccounts(accounts)) {
             consoleService.printAvailableAccounts(accounts);
             int selection = consoleService.promptForInt("Select the Account to view its balance");
             consoleService.displayBalanceForAccount(accounts.get(selection));
         } else {
             consoleService.displayBalanceForAccount(accounts.get(0));
         }
-	}
+    }
 
     //Natalie's Edits
-	private void viewTransferHistory() {
-        // TODO Auto-generated method stub
-       int accId = 0;
-        List<Transfer> transfer = new ArrayList<>();
-        List<Account> account = accountService.getAccounts(currentUser.getUser());
-        for (Account accounts : account){
-           accId = accounts.getAccountId();
-        }
-        User user  = currentUser.getUser();
-        Long id = user.getId();
-        int useID = id.intValue();
-        System.out.println("this is id: "+id + " Int value "+ useID + " acctid "+accId);
-        transfer = transferService.getTransferTransactions(useID,accId);
-        System.out.println("before if " + transfer);
-        if(transfer != (null)) {
-            consoleService.printHistoryHeader();
-            for (Transfer transferlist : transfer) {
-                System.out.println("before If");
-                if (transferlist.getAmount() != null && transferlist.getStatusId() != TRANSFER_PENDING) {
-                    System.out.println("before isFrom");
-                    boolean isFrom = (transferlist.getId() == 1);
-                    consoleService.printTransHistory(transferlist.getId(),(transferlist.getId() == 1 ? transferlist.getAccountTo() : transferlist.getAccountFrom()),transferlist.getAmount(),isFrom);
-                    System.out.println("console services");
-                } else {
-                    System.out.println("No current transfers in the system.");
-                }
-            }
-        }
-	}
+    private void viewTransferHistory() {
+        //Calls the transfer Menu; will print the transfers selected and then prompt to view more details.
+        transferMenu(TRANSFER_SUCCESS);
+    }
 
-	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
-
+    private void viewPendingRequests() {
+        //Calls the transfer Menu; will print the transfers selected and then prompt to view more details.
+        transferMenu(TRANSFER_PENDING);
+    }
 
     //MAIN FUNCTION, Still Working On It
-	private void sendBucks() {
+    private void sendBucks() {
         //Prompt user to pick a transfer to from list.
         consoleService.getUserList(userService.getUsers());
         int enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
-        try
-        {
+        try {
             //Get a Big Decimal from the user
             BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
 
@@ -168,7 +142,7 @@ public class App {
 
             //HERE CREATE AND DOCUMENT THIS CURRENT TRANSFER
             //Use Transfer services to create a new transfer
-            Transfer transfer = transferService.createNewTransfer(1,2, userAccount.getAccountId(),transferAccount.getAccountId(),answerAmount);
+            Transfer transfer = transferService.createNewTransfer(1, 2, userAccount.getAccountId(), transferAccount.getAccountId(), answerAmount);
             Transfer transferWithGeneratedID = transferService.add(transfer);
             System.out.println(transferWithGeneratedID.getId());
             System.out.println(transferWithGeneratedID);
@@ -179,17 +153,93 @@ public class App {
             //transferService.transfer(userAccount, transferModel, true);
 
 
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.getMessage();
         }
-		
-	}
 
-	private void requestBucks() {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
+    private void requestBucks() {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    public String convertStatus(int status) {
+        String newStatus = "";
+        switch (status) {
+            case 1:
+                newStatus = "Pending";
+                break;
+            case 2:
+                newStatus = "Approved";
+                break;
+            case 3:
+                newStatus = "Rejected";
+                break;
+            default:
+        }
+        return newStatus;
+    }
+
+    private List<Transfer> fetchHistory(int historyType) {
+        //If history input selection was for past transfers, then we call function again with rejects as well.
+        if (historyType == TRANSFER_SUCCESS) {
+            fetchHistory(TRANSFER_REJECT);
+        }
+
+        int accId = 0;
+        String status = "";
+        //Get list of accounts for the current user
+        List<Account> account = accountService.getAccounts(currentUser.getUser());
+        for (Account accounts : account) {
+            accId = accounts.getAccountId();
+        }
+        //Get the current users ID
+        User user = currentUser.getUser();
+        Long id = user.getId();
+        int useID = id.intValue();
+
+        //Request list of accounts from server using AccID and UserID
+        List<Transfer> transferList = transferService.getTransferTransactions(useID, accId);
+
+        //check if list is empty, if so print empty history report
+        if (transferList.isEmpty()) {
+            consoleService.printHistoryHeader();
+            consoleService.printEmptyHistory();
+        } else {
+
+            //Print the header, then check if each transaction is a "to" or "from" transfer
+            //once this is known send to console print method to print correctly.
+            consoleService.printHistoryHeader();
+            for (Transfer transfer : transferList) {
+                if (transfer.getAmount() != null && transfer.getStatusId() == historyType) {
+                    boolean isFrom = (transfer.getAccountFrom() == accId);
+                    status = convertStatus(transfer.getStatusId());
+                    consoleService.printTransHistory(transfer.getId(), ((isFrom) ? transfer.getAccountTo() : transfer.getAccountFrom()),
+                            transfer.getAmount(), status, isFrom);
+                }
+            }
+        }
+        return transferList;
+    }
+
+    private void transferMenu(int historySelection) {
+        int userInput = -1;
+        while (userInput != 0) {
+            //Calls the Fetch History helper method, ask which history we are looking for;
+            List<Transfer> transferList = fetchHistory(historySelection);
+            consoleService.printTransferSelection();
+            userInput = consoleService.promptForMenuSelection("Enter Selection: ");
+            Transfer selectedTransfer = transferService.getSelectedTransaction(transferList, userInput);
+            if (userInput == 0) {
+                break;
+            } else if (selectedTransfer == null) {
+                System.out.println("Incorrect Entry please try again");
+            } else {
+                consoleService.printTransferDetails(selectedTransfer);
+                consoleService.pause();
+            }
+        }
+    }
 }

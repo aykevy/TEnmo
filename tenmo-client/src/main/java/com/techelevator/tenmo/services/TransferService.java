@@ -85,12 +85,15 @@ public class TransferService
 
 
     public List<Transfer> getTransferTransactions(int useId, int accId) {
-
-    //base url/useId/accId/transfer
-        System.out.println("in transfer service");
        Transfer[]  result = restTemplate.getForObject(BASE_URL + useId+"/"+ accId+"/transfer", Transfer[].class);
-
         return Arrays.asList(result);
-
+    }
+    public Transfer getSelectedTransaction(List<Transfer> transferList, int tranID){
+        for (Transfer transfer : transferList) {
+            if (transfer.getId() == tranID){
+                return transfer;
+            }
+        }
+        return null;
     }
 }
