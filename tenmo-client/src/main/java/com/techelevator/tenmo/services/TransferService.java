@@ -23,8 +23,6 @@ import java.util.List;
 
 public class TransferService
 {
-
-
     //Init restTemplate to call a request from the controller.
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -34,12 +32,19 @@ public class TransferService
     //Newest Edit Made During Tech Session
     public boolean transfer(User user, Transfer transfer, boolean isWithdraw)
     {
-        String transferType = isWithdraw ? "deposit" : "withdraw";
+        String transferType = isWithdraw ? "withdraw" : "deposit";
         HttpEntity<Transfer> entity = createEntityTransfer(transfer);
         boolean success = false;
         try
         {
-            restTemplate.put(BASE_URL + user.getId() + "/" + transfer.getAccountTo() + "/transfer/" + transferType, entity);
+            if (transferType.equals("deposit"))
+            {
+                restTemplate.put(BASE_URL + user.getId() + "/" + transfer.getAccountTo() + "/transfer/" + transferType, entity);
+            }
+            else if (transferType.equals("withdraw"))
+            {
+                restTemplate.put(BASE_URL + user.getId() + "/" + transfer.getAccountFrom() + "/transfer/" + transferType, entity);
+            }
             success = true;
         }
         catch (RestClientResponseException | ResourceAccessException e)
@@ -49,7 +54,8 @@ public class TransferService
         return success;
     }
 
-    public Transfer add(Transfer newTransfer) {
+    public Transfer add(Transfer newTransfer)
+    {
         HttpEntity<Transfer> entity = createEntityTransfer(newTransfer);
         Transfer returnedTransfer = null;
         try
@@ -61,9 +67,10 @@ public class TransferService
             BasicLogger.log(e.getMessage());
         }
         return returnedTransfer;
-
     }
-    public Transfer createNewTransfer(int tranType, int status,int fromID,int toID,BigDecimal transferAmount){
+
+    public Transfer createNewTransfer(int tranType, int status, int fromID, int toID, BigDecimal transferAmount)
+    {
         Transfer transfer = new Transfer();
         //int id will be automatically created
         //typeId 1 = request, 2 = receive

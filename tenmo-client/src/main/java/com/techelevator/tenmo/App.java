@@ -173,52 +173,77 @@ public class App {
         }
 	}
 
+    private void approveRequests()
+    {
+        //After viewing your pending requests, you may approve requests here
+        //1 - UPDATE THAT THE STATUS HAS BEEN RECEIVED
+        //2 - IF ACCEPT, do the actual sending AND CHANGE CODE FROM PENDING TO APPROVED
+        //3 - IF REJECT, do NO sending AND CHANGE CODE FROM PENDIGN TO REJECT
+    }
 
-    //MAIN FUNCTION, Still Working On It
+    private Transfer generateTransferWithId(int enteredId, BigDecimal answerAmount, int transferTypeId, int statusTypeId)
+    {
+        //Current User Account, currentUser = AuthenticatedUser
+        List<Account> currentUserAccounts = accountService.getAccounts(currentUser.getUser());
+        Account userAccount = currentUserAccounts.get(0);
+
+        //Target Account For Transfer
+        User targetTransferUser = userService.getUser(enteredId);
+        List<Account> transferUserAccounts = accountService.getAccounts(targetTransferUser);
+        Account transferAccount = transferUserAccounts.get(0);
+
+        //Here we create and document this transfer and add to database.
+        Transfer transfer = transferService.createNewTransfer(transferTypeId,statusTypeId, userAccount.getAccountId(),transferAccount.getAccountId(),answerAmount);
+        Transfer transferWithGeneratedID = transferService.add(transfer);
+        return transferWithGeneratedID;
+    }
+
 	private void sendBucks() {
         //Prompt user to pick a transfer to from list.
         consoleService.getUserList(userService.getUsers());
-        int enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
+        try
+        {
+            int enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
+            if (enteredId == currentUser.getUser().getId())
+            {
+                System.out.println("Sorry, you can not send money to yourself. Try Again.");
+            }
+            else
+            {
+                //Get a Big Decimal from the user
+                BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
+                Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, 2, 2);
+
+                //Actual Sending Portion
+                //DEPOSIT INTO TARGET
+                transferService.transfer(userService.getUser(enteredId), transferWithId, false);
+                //WITHDRAW FROM USER
+                transferService.transfer(currentUser.getUser(), transferWithId, true);
+                System.out.print("TRANSFER CREATED, MONEY HAS BEEN AUTOMATICALLY APPROVED AND SENT.");
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("Invalid input. Try Again.");
+        }
+	}
+
+	private void requestBucks()
+    {
+        consoleService.getUserList(userService.getUsers());
+        int enteredId = consoleService.promptForInt("Enter ID of user you want to request TEBucks from: ");
         try
         {
             //Get a Big Decimal from the user
-            BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
-
-            //Current User Account, currentUser = AuthenticatedUser
-            List<Account> currentUserAccounts = accountService.getAccounts(currentUser.getUser());
-            Account userAccount = currentUserAccounts.get(0);
-
-            //Target Account For Transfer
-            User targetTransferUser = userService.getUser(enteredId);
-            List<Account> transferUserAccounts = accountService.getAccounts(targetTransferUser);
-            Account transferAccount = transferUserAccounts.get(0);
-
-            //HERE CREATE AND DOCUMENT THIS CURRENT TRANSFER
-            //Use Transfer services to create a new transfer
-            Transfer transfer = transferService.createNewTransfer(1,2, userAccount.getAccountId(),transferAccount.getAccountId(),answerAmount);
-            Transfer transferWithGeneratedID = transferService.add(transfer);
-            System.out.println(transferWithGeneratedID.getId());
-            System.out.println(transferWithGeneratedID);
-            System.out.print("TRANSFER OBJECT WITH GENERATED ID SUCCESSFUL, END FOR NOW");
-
-
-            //DO THE ACTUAL TRANSFER NEXT
-            //transferService.transfer(userAccount, transferModel, true);
-
-
+            BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to request from user " + enteredId + " :");
+            Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, 1, 1);
+            System.out.print("TRANSFER CREATED, REQUEST HAS BEEN SENT.");
         }
         catch(Exception e)
         {
             e.getMessage();
         }
-		
 	}
-
-	private void requestBucks() {
-		// TODO Auto-generated method stub
-		
-	}
-
 
     public String convertStatus(int status) {
         String newStatus = "";

@@ -19,25 +19,34 @@ public class TransferController
         this.transferDao = transferDao;
     }
 
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @RequestMapping(path = "{id}/{accountId}/transfer/withdraw", method = RequestMethod.PUT)
-    public void withdraw(@PathVariable int id, @PathVariable int accountId, Transfer transfer)
-    {
-        transferDao.withdraw(id, accountId, transfer.getAmount());
-    }
-
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
-    @RequestMapping(path = "{id}/{accountId}/transfer/deposit", method = RequestMethod.PUT)
-    public void deposit(@PathVariable int id, @PathVariable int accountId, Transfer transfer)
-    {
-        transferDao.deposit(id, accountId, transfer.getAmount());
-    }
-
+    /*
+        This function creates a record for the transfer database for a transaction.
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "transfer", method = RequestMethod.POST)
     public Transfer add(@Valid @RequestBody Transfer transfer)
     {
         return transferDao.add(transfer);
+    }
+
+    /*
+        This function deposits money into account. Requires the user id and account id of a user.
+     */
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @RequestMapping(path = "{id}/{accountId}/transfer/withdraw", method = RequestMethod.PUT)
+    public void withdraw(@PathVariable int id, @PathVariable int accountId, @Valid @RequestBody Transfer transfer)
+    {
+        transferDao.withdraw(id, accountId, transfer.getAmount());
+    }
+
+    /*
+        This function deposits money into account. Requires the user id and account id of a user.
+     */
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @RequestMapping(path = "{id}/{accountId}/transfer/deposit", method = RequestMethod.PUT)
+    public void deposit(@PathVariable int id, @PathVariable int accountId, @Valid @RequestBody Transfer transfer)
+    {
+        transferDao.deposit(id, accountId, transfer.getAmount());
     }
 
     //@ResponseStatus(HttpStatus.OK)
@@ -46,5 +55,4 @@ public class TransferController
         System.out.println("here in controller");
         return transferDao.getTransferTransactions(accountId);
     }
-
 }

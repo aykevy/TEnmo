@@ -14,21 +14,25 @@ import java.util.List;
 
 @Component
 public class JdbcUserDao implements UserDao {
-
     private static final BigDecimal STARTING_BALANCE = new BigDecimal("1000.00");
     private JdbcTemplate jdbcTemplate;
 
-    public JdbcUserDao(JdbcTemplate jdbcTemplate) {
+    public JdbcUserDao(JdbcTemplate jdbcTemplate)
+    {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public int findIdByUsername(String username) {
+    public int findIdByUsername(String username)
+    {
         String sql = "SELECT user_id FROM tenmo_user WHERE username ILIKE ?;";
         Integer id = jdbcTemplate.queryForObject(sql, Integer.class, username);
-        if (id != null) {
+        if (id != null)
+        {
             return id;
-        } else {
+        }
+        else
+        {
             return -1;
         }
     }

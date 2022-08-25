@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class JdbcTransferDao implements TransferDao{
+public class JdbcTransferDao implements TransferDao {
 
-    //New JDBC to talk to the database and get requested information via SQL
+    /* New JDBC to talk to the database and get requested information via SQL. */
     private JdbcTemplate jdbcTemplate;
 
-    //Constructor for JDBC
+    /* Constructor for JDBC */
     public JdbcTransferDao(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -35,42 +35,32 @@ public class JdbcTransferDao implements TransferDao{
         List<Transfer> tranfersList = new ArrayList<>();
         String sql = "SELECT transfer_id, account_from, account_to, amount, transfer_type_id, transfer_status_id " +
                 "FROM transfer " +
-                "WHERE (account_from = ? OR account_to = ?)  ";
+                "WHERE (account_from = ? OR account_to = ?)";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
         //As long as there were results, add to list to be returned.
-        if(results != null) {
-            while (results.next()) {
+        if (results != null)
+        {
+            while (results.next())
+            {
                 tranfersList.add(mapTransferRowSet(results));
             }
-
-        return tranfersList;
-    }
+            return tranfersList;
+        }
         return null;
     }
 
-    //Kevin's Edits During Tech Session
-    @Override
-    public void withdraw(int id, int accountId, BigDecimal withdrawAmount)
-    {
-        String sql = "UPDATE account SET balance = balance - ? WHERE user_id = ? AND account_id = ?";
-        jdbcTemplate.update(sql, withdrawAmount, id, accountId);
-    }
-
-    //Kevin's Edits During Tech Session
-    @Override
-    public void deposit(int id, int accountId, BigDecimal depositAmount)
-    {
-        String sql = "UPDATE account SET balance = balance + ? WHERE user_id = ? AND account_id = ?";
-        jdbcTemplate.update(sql, depositAmount, id, accountId);
-    }
-
+    /*
+        This method adds an entry into the database for the transfer table and returns an updated
+        transfer object with the generated id from the database.
+     */
     @Override
     public Transfer add(Transfer transfer)
     {
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "VALUES (?, ?, ?, ?, ?)";
         KeyHolder holder = new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator() {
+        jdbcTemplate.update(new PreparedStatementCreator()
+        {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException
             {
@@ -83,14 +73,36 @@ public class JdbcTransferDao implements TransferDao{
                 return ps;
             }
         }, holder);
-        Map<String, Object> transfer_id = holder.getKeys();
-        transfer.setId((Integer)transfer_id.get("transfer_id"));
+        Map<String, Object> keys = holder.getKeys();
+        transfer.setId((Integer)keys.get("transfer_id"));
         return transfer;
     }
 
+    /*
+        This method updates an entry in an account where balance is decreased for withdrawal.
+     */
+    @Override
+    public void withdraw(int id, int accountId, BigDecimal withdrawAmount)
+    {
+        String sql = "UPDATE account SET balance = balance - ? WHERE user_id = ? AND account_id = ?;";
+        int rowsUpdated = jdbcTemplate.update(sql, withdrawAmount, id, accountId);
+        System.out.println("ROWS AFFECTED: " + rowsUpdated);
+    }
 
+    /*
+        This method updates an entry in an account where balance is increased for deposit.
+     */
+    @Override
+    public void deposit(int id, int accountId, BigDecimal depositAmount)
+    {
+        String sql = "UPDATE account SET balance = balance + ? WHERE user_id = ? AND account_id = ?;";
+        int rowsUpdated = jdbcTemplate.update(sql, depositAmount, id, accountId);
+        System.out.println("ROWS AFFECTED: " + rowsUpdated);
+    }
 
-    //Helper method to create the account object using row set data.
+    /*
+        Helper method that maps the row set data into a transfer object.
+     */
     public Transfer mapTransferRowSet(SqlRowSet rs){
         Transfer transfer = new Transfer();
         transfer.setId(rs.getInt("transfer_id"));

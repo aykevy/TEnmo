@@ -39,6 +39,7 @@ public class AccountService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new HttpEntity<>(account, headers);
     }
+
     public boolean hasMultipleAccounts(List<Account> accounts){
         return accounts.size() > 1;
     }
