@@ -119,12 +119,12 @@ public class ConsoleService {
             userIds.add(Math.toIntExact(user.getId()));
         }
     }
-    public void printTransHistory(int id, int account, BigDecimal amount,Boolean isFrom){
-        System.out.println("IsFrom");
+    public void printTransHistory(int id, int account, BigDecimal amount,String status, Boolean isFrom){
+        //System.out.println("IsFrom");
         if (isFrom) {
-            System.out.println(id + "  " + "To:    " + account + "         $ " + amount);
+            System.out.println(id + "  " + "        To: " + account + "         $ " + amount+ "   "+ status);
         } else{
-            System.out.println(id + "  " + "From:    " + account + "         $ " + amount);
+            System.out.println(id + "  " + "      From: " + account + "         $ " + amount+ "   "+ status);
         }
     }
 
@@ -133,10 +133,10 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
     public void printHistoryHeader(){
-        System.out.println("---------------------------------------------");
+        System.out.println("--------------------------------------------------");
         System.out.println("Transfer");
-        System.out.println("ID                 From/To           Amount  ");
-        System.out.println("---------------------------------------------");
+        System.out.println("ID            From/To           Amount     Status");
+        System.out.println("--------------------------------------------------");
     }
 
     private void printStars(String account, String balance) {

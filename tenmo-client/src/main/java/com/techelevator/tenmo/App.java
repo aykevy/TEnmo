@@ -112,8 +112,10 @@ public class App {
 
     //Natalie's Edits
 	private void viewTransferHistory() {
-        // TODO Auto-generated method stub
-       int accId = 0;
+
+        int accId = 0;
+        String status = "";
+        //Transfer transfer = new Transfer();
         List<Transfer> transfer = new ArrayList<>();
         List<Account> account = accountService.getAccounts(currentUser.getUser());
         for (Account accounts : account){
@@ -122,20 +124,18 @@ public class App {
         User user  = currentUser.getUser();
         Long id = user.getId();
         int useID = id.intValue();
-        System.out.println("this is id: "+id + " Int value "+ useID + " acctid "+accId);
         transfer = transferService.getTransferTransactions(useID,accId);
-        System.out.println("before if " + transfer);
-        if(transfer != (null)) {
+        if(transfer.isEmpty()) {
+            consoleService.printHistoryHeader();
+            System.out.println("No current transfers in the system.");
+        } else {
             consoleService.printHistoryHeader();
             for (Transfer transferlist : transfer) {
-                System.out.println("before If");
                 if (transferlist.getAmount() != null && transferlist.getStatusId() != TRANSFER_PENDING) {
-                    System.out.println("before isFrom");
-                    boolean isFrom = (transferlist.getId() == 1);
-                    consoleService.printTransHistory(transferlist.getId(),(transferlist.getId() == 1 ? transferlist.getAccountTo() : transferlist.getAccountFrom()),transferlist.getAmount(),isFrom);
-                    System.out.println("console services");
-                } else {
-                    System.out.println("No current transfers in the system.");
+                    boolean isFrom = (transferlist.getAccountFrom() == accId);
+                    status = convertStatus(transferlist.getStatusId());
+                    consoleService.printTransHistory(transferlist.getId(),((isFrom==true) ? transferlist.getAccountTo() : transferlist.getAccountFrom()),
+                            transferlist.getAmount(), status,isFrom);
                 }
             }
         }
@@ -143,7 +143,34 @@ public class App {
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		
+        int accId = 0;
+        String status = "";
+        //Transfer transfer = new Transfer();
+        List<Transfer> transfer = new ArrayList<>();
+        List<Account> account = accountService.getAccounts(currentUser.getUser());
+        for (Account accounts : account){
+            accId = accounts.getAccountId();
+        }
+        User user  = currentUser.getUser();
+        Long id = user.getId();
+        int useID = id.intValue();
+        int option = 2;
+        transfer = transferService.getTransferTransactions(useID,accId);
+        if(transfer.isEmpty()) {
+            consoleService.printHistoryHeader();
+            System.out.println("No current transfers in the system.");
+        } else {
+            consoleService.printHistoryHeader();
+            for (Transfer transferlist : transfer) {
+                if (transferlist.getAmount() != null && transferlist.getStatusId() == TRANSFER_PENDING) {
+                    boolean isFrom = (transferlist.getAccountFrom() == accId);
+                    status = convertStatus(transferlist.getStatusId());
+                    consoleService.printTransHistory(transferlist.getId(),((isFrom==true) ? transferlist.getAccountTo() : transferlist.getAccountFrom()),
+                            transferlist.getAmount(), status,isFrom);
+                }
+
+            }
+        }
 	}
 
 
@@ -192,4 +219,18 @@ public class App {
 		
 	}
 
+
+    public String convertStatus(int status) {
+        String newStatus = "";
+        switch (status){
+            case 1 : newStatus = "Pending";
+                break;
+            case 2 : newStatus = "Approved";
+                break;
+            case 3 : newStatus = "Rejected";
+                break;
+            default:
+        }
+        return newStatus;
+    }
 }
