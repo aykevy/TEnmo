@@ -38,7 +38,19 @@ public class JdbcAccountDao implements AccountDao{
         }
         return accountsList;
     }
+    public String findUserNameByAccountId(int id) {
+        String username = "";
+        String sql = "SELECT username, account_id, a.user_id FROM account as a" +
+                " JOIN tenmo_user using (user_id) WHERE account_id = ? ";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
+        //As long as there were results, add to list to be returned.
 
+        while (results.next()) {
+            username = results.getString("username");
+
+        }
+        return username;
+    }
 
     //helper method to create the Account Object from rowset data.
     public Account mapAccountRowSet(SqlRowSet rs){

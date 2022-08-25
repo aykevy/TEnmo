@@ -2,8 +2,10 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
+import io.cucumber.core.backend.Pending;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -138,6 +140,36 @@ public class ConsoleService {
         System.out.println("ID            From/To           Amount     Status");
         System.out.println("--------------------------------------------------");
     }
+    public void printEmptyHistory(){
+        System.out.println("--------------------------------------------------");
+        System.out.println("       No current transfers in the system         ");
+        System.out.println("--------------------------------------------------");
+    }
+    public void printTransferSelection(){
+        System.out.println("--------------------------------------------------");
+        System.out.println("---- Enter a transfer ID to view more details ----");
+        System.out.println("--------- Press 0 to exit to the main menu -------");
+        System.out.println("--------------------------------------------------");
+    }
+    public void printTransferDetails(Transfer transfer){
+
+            System.out.println("--------------------------------------------------");
+            System.out.println("--------------- Transfer Details -----------------");
+            System.out.println("--------------------------------------------------");
+            System.out.println("ID: " + transfer.getId());
+            System.out.println("From: " + transfer.getAccountFrom());
+            System.out.println("To: " + transfer.getAccountTo());
+            System.out.println("Transfer type: " + (transfer.getTypeId() == 1 ? "Request" : "Send"));
+
+            if (transfer.getStatusId() == 3){
+                System.out.println("Status: Rejected");
+            }else{
+                System.out.println("Status: " + (transfer.getStatusId() == 1 ? "Pending" : "Approved"));
+            }
+
+            System.out.println("Amount: " + transfer.getAmount());
+            System.out.println("--------------------------------------------------");
+        }
 
     private void printStars(String account, String balance) {
         if (account.length() > balance.length()) {

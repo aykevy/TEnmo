@@ -33,6 +33,11 @@ public class AccountService {
         return Arrays.asList(result);
     }
 
+    public String findUserNameByAccountId(int accountid){
+        return restTemplate.getForObject(BASE_URL + accountid + "/account",String.class);
+
+    }
+
     //helper method to create entities.
     private HttpEntity<Account> createEntityAccount(Account account) {
         HttpHeaders headers = new HttpHeaders();
