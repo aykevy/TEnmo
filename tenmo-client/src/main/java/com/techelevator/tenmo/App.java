@@ -189,12 +189,16 @@ public class App {
         }
 
         int accId = 0;
+        int acctID = 0;
         String status = "";
+        String name = "";
+
         //Get list of accounts for the current user
         List<Account> account = accountService.getAccounts(currentUser.getUser());
         for (Account accounts : account) {
             accId = accounts.getAccountId();
         }
+
         //Get the current users ID
         User user = currentUser.getUser();
         Long id = user.getId();
@@ -215,8 +219,13 @@ public class App {
             for (Transfer transfer : transferList) {
                 if (transfer.getAmount() != null && transfer.getStatusId() == historyType) {
                     boolean isFrom = (transfer.getAccountFrom() == accId);
+                    name = accountService.findUserNameByAccountId(((isFrom) ? transfer.getAccountTo() : transfer.getAccountFrom()));
+                    System.out.println("this is the "+name);
+                    for (Account accounts : account) {
+                        accId = accounts.getAccountId();
+                    }
                     status = convertStatus(transfer.getStatusId());
-                    consoleService.printTransHistory(transfer.getId(), ((isFrom) ? transfer.getAccountTo() : transfer.getAccountFrom()),
+                    consoleService.printTransHistory(transfer.getId(),((isFrom) ? transfer.getAccountTo() : transfer.getAccountFrom()),
                             transfer.getAmount(), status, isFrom);
                 }
             }
