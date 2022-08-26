@@ -12,4 +12,5 @@ public interface TransferDao {
     void withdraw(int id, int accountId, BigDecimal withdrawAmount);
     void deposit(int id, int accountId, BigDecimal withdrawAmount);
     Transfer add(Transfer transfer);
+    void update(Transfer transfer);
 }

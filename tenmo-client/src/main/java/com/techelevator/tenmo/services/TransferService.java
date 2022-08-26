@@ -25,8 +25,9 @@ public class TransferService
 {
     //Init restTemplate to call a request from the controller.
     private final RestTemplate restTemplate = new RestTemplate();
-
     private final String BASE_URL = "http://localhost:8080/";
+    final int TRANSFER_SEND = 2;
+    final int TRANSFER_REQUEST =1;
 
 
     //Newest Edit Made During Tech Session
@@ -37,12 +38,14 @@ public class TransferService
         boolean success = false;
         try
         {
-            if (transferType.equals("deposit"))
-            {
+            if (transferType.equals("deposit")){
+
+                System.out.println("Depositing into "+ user.getId()+ ":" + transfer.getAccountTo());
                 restTemplate.put(BASE_URL + user.getId() + "/" + transfer.getAccountTo() + "/transfer/" + transferType, entity);
-            }
-            else if (transferType.equals("withdraw"))
-            {
+
+            } else if (transferType.equals("withdraw")){
+
+                System.out.println("Withdrawing from "+ user.getId()+ ":" + transfer.getAccountFrom());
                 restTemplate.put(BASE_URL + user.getId() + "/" + transfer.getAccountFrom() + "/transfer/" + transferType, entity);
             }
             success = true;
@@ -79,20 +82,30 @@ public class TransferService
         transfer.setStatusId(status);
         transfer.setAccountFrom(fromID);
         transfer.setAccountTo(toID);
+        if (tranType == TRANSFER_SEND){
+            transfer.setAccountFrom(fromID);
+            transfer.setAccountTo(toID);
+        } else if (tranType == TRANSFER_REQUEST){
+            transfer.setAccountFrom(toID);
+            transfer.setAccountTo(fromID);
+        }
         transfer.setAmount(transferAmount);
         return transfer;
     }
 
-    //Helper method to create entities.
-    private HttpEntity<Transfer> createEntityTransfer(Transfer transfer) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(transfer, headers);
+    public boolean updateTransfer (Transfer transfer){
+       boolean success = false;
+       try {
+           restTemplate.put(BASE_URL + "transfer/" + transfer.getId() + "/", createEntityTransfer(transfer), Transfer.class);
+           success = true;
+       } catch (RestClientResponseException | ResourceAccessException e) {
+               BasicLogger.log(e.getMessage());
+       }
+        return success;
     }
 
-
     public List<Transfer> getTransferTransactions(int useId, int accId) {
-       Transfer[]  result = restTemplate.getForObject(BASE_URL + useId+"/"+ accId+"/transfer", Transfer[].class);
+        Transfer[]  result = restTemplate.getForObject(BASE_URL + useId+"/"+ accId+"/transfer", Transfer[].class);
         return Arrays.asList(result);
     }
     public Transfer getSelectedTransaction(List<Transfer> transferList, int tranID){
@@ -103,4 +116,11 @@ public class TransferService
         }
         return null;
     }
+    //Helper method to create entities.
+    private HttpEntity<Transfer> createEntityTransfer(Transfer transfer) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<>(transfer, headers);
+    }
+
 }

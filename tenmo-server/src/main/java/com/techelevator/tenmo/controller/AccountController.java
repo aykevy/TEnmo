@@ -25,9 +25,10 @@ public class AccountController {
 
     }
 
-    @RequestMapping(path = "{accountid}/account", method = RequestMethod.GET)
-    public String findUserNameByAccountId (@PathVariable @RequestBody int accountid){
-        return accountDao.findUserNameByAccountId(accountid);
+    ///update method to match signature of "User/Account/AccountID - also move to the User controller
+    @RequestMapping(path = "{accountId}/account", method = RequestMethod.GET)
+    public String findUserNameByAccountId (@PathVariable @RequestBody int accountId){
+        return accountDao.findUserNameByAccountId(accountId);
     }
 
 }

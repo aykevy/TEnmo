@@ -29,6 +29,12 @@ public class TransferController
         return transferDao.add(transfer);
     }
 
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @RequestMapping(path = "transfer/{transferID}", method = RequestMethod.PUT)
+    public void update(@Valid @RequestBody Transfer transfer, @PathVariable int transferID){
+        transferDao.update(transfer);
+    }
+
     /*
         This function deposits money into account. Requires the user id and account id of a user.
      */
@@ -49,7 +55,6 @@ public class TransferController
         transferDao.deposit(id, accountId, transfer.getAmount());
     }
 
-    //@ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "{id}/{accountId}/transfer", method = RequestMethod.GET)
     public List<Transfer> getTransferTransactions(@PathVariable int id, @PathVariable int accountId){
         System.out.println("here in controller");

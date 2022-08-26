@@ -25,13 +25,16 @@ public class UserService
     }
 
     //Newest edit for single user
-    public User getUser(int id)
-    {
+    public User getUser(int id){
         return restTemplate.getForObject(BASE_URL + "user/" + id, User.class);
     }
 
-    private HttpEntity<User> createEntity(User user)
-    {
+    public int getUserByAccountId(int accountId,boolean isFrom,int transferId){
+        String toOrFrom = isFrom ? "fromAccount" : "toAccount";
+        return restTemplate.getForObject(BASE_URL + "user/account/" + accountId +"/"+transferId+"/findUser/"+toOrFrom, int.class);
+    }
+
+    private HttpEntity<User> createEntity(User user){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new HttpEntity<>(user, headers);

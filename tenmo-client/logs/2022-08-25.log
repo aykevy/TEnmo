@@ -3,3 +3,15 @@
 2022-08-25T09:04:00.1122299 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
 2022-08-25T09:04:09.6592189 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
 2022-08-25T11:54:06.2667936 400 : [{"timestamp":"2022-08-25T16:54:06.217+00:00","status":400,"error":"Bad Request","message":"Validation failed for object='registerUserDTO'. Error count: 2","errors":[{"codes":["NotEmpty.registerUserDTO... (947 bytes)]
+2022-08-25T14:51:52.6815148 500 : [{"timestamp":"2022-08-25T19:51:52.623+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; ERROR: new row for relation \"transfer\" violates check constraint \"ck_... (536 bytes)]
+2022-08-25T14:52:22.9179955 405 : [{"timestamp":"2022-08-25T19:52:22.913+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'POST' not supported","path":"/transfer/3008"}]
+2022-08-25T14:54:19.8808358 405 : [{"timestamp":"2022-08-25T19:54:19.859+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'POST' not supported","path":"/transfer/3008"}]
+2022-08-25T14:56:15.0466184 405 : [{"timestamp":"2022-08-25T19:56:15.018+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'POST' not supported","path":"/transfer/3008"}]
+2022-08-25T14:57:18.7398122 405 : [{"timestamp":"2022-08-25T19:57:18.713+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'POST' not supported","path":"/transfer/3008"}]
+2022-08-25T14:58:25.7366621 405 : [{"timestamp":"2022-08-25T19:58:25.715+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'POST' not supported","path":"/transfer/3008"}]
+2022-08-25T16:35:42.5812096 500 : [{"timestamp":"2022-08-25T21:35:42.560+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; ERROR: new row for relation \"transfer\" violates check constraint \"ck_... (536 bytes)]
+2022-08-25T16:44:09.2988039 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2022-08-25T18:09:25.3244466 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2022-08-25T19:50:50.3474277 500 : [{"timestamp":"2022-08-26T00:50:50.335+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; ERROR: new row for relation \"transfer\" violates check constraint \"ck_... (536 bytes)]
+2022-08-25T19:51:37.6128499 500 : [{"timestamp":"2022-08-26T00:51:37.599+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; ERROR: new row for relation \"transfer\" violates check constraint \"ck_... (538 bytes)]
+2022-08-25T19:58:37.6193872 401 : [no body]

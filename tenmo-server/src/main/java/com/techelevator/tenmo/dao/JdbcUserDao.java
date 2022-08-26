@@ -94,7 +94,37 @@ public class JdbcUserDao implements UserDao {
 
         return true;
     }
-
+    @Override
+    public int findUserByAccountId(int accountId, String toOrFrom,int transferId) {
+        String sql = "";
+        if (toOrFrom.equals("fromAccount")) {
+            System.out.println("From: " + accountId + "     " + transferId);
+            sql =  "SELECT t.user_id " +
+                    "FROM tenmo_user AS t " +
+                    "JOIN account AS a " +
+                    "ON a.user_id = t.user_id " +
+                    "JOIN transfer AS f " +
+                    "ON f.account_to = a.account_id " +
+                    "WHERE a.account_id = ? " +
+                    "AND f.transfer_id = ?;";
+        } else {
+            System.out.println("To: "+accountId + "     " + transferId);
+            sql = "SELECT t.user_id " +
+                    "FROM tenmo_user AS t " +
+                    "JOIN account " +
+                    "USING (user_id) " +
+                    "JOIN transfer " +
+                    "ON transfer.account_from = account.account_id " +
+                    "WHERE account_id = ? " +
+                    "AND transfer_id = ?;";
+        }
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, accountId, transferId);
+        if (rs.next()){
+            System.out.println(rs.getInt("user_id"));
+            return rs.getInt("user_id");
+        }
+        return 0;
+    }
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
         user.setId(rs.getLong("user_id"));
@@ -104,4 +134,5 @@ public class JdbcUserDao implements UserDao {
         user.setAuthorities("USER");
         return user;
     }
+
 }

@@ -21,6 +21,8 @@ public class App {
     private final int TRANSFER_PENDING = 1;
     private final int TRANSFER_SUCCESS = 2;
     private final int TRANSFER_REJECT = 3;
+    final int TRANSFER_SEND = 2;
+    final int TRANSFER_REQUEST =1;
     //new
     private final UserService userService = new UserService();
 
@@ -157,14 +159,15 @@ public class App {
             {
                 //Get a Big Decimal from the user
                 BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
-                Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, 2, 2);
+                Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_SUCCESS, TRANSFER_SEND);
 
-                //Actual Sending Portion
-                //DEPOSIT INTO TARGET
-                transferService.transfer(userService.getUser(enteredId), transferWithId, false);
-                //WITHDRAW FROM USER
-                transferService.transfer(currentUser.getUser(), transferWithId, true);
-                System.out.print("TRANSFER CREATED, MONEY HAS BEEN AUTOMATICALLY APPROVED AND SENT.");
+                sendTheBucks(userService.getUser(enteredId),currentUser.getUser(),transferWithId);
+//                //Actual Sending Portion
+//                //DEPOSIT INTO TARGET
+//                transferService.transfer(userService.getUser(enteredId), transferWithId, false);
+//                //WITHDRAW FROM USER
+//                transferService.transfer(currentUser.getUser(), transferWithId, true);
+//                System.out.print("TRANSFER CREATED, MONEY HAS BEEN AUTOMATICALLY APPROVED AND SENT.");
             }
         }
         catch(Exception e)
@@ -181,7 +184,7 @@ public class App {
         {
             //Get a Big Decimal from the user
             BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to request from user " + enteredId + " :");
-            Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, 1, 1);
+            Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_PENDING, TRANSFER_REQUEST);
             System.out.print("TRANSFER CREATED, REQUEST HAS BEEN SENT.");
         }
         catch(Exception e)
@@ -218,16 +221,9 @@ public class App {
             fetchHistory(TRANSFER_REJECT);
         }
 
-        int accId = 0;
-        int acctID = 0;
         String status = "";
         String name = "";
 
-        //Get list of accounts for the current user
-        List<Account> account = accountService.getAccounts(currentUser.getUser());
-        for (Account accounts : account) {
-            accId = accounts.getAccountId();
-        }
 
         //Get the current users ID
         User user = currentUser.getUser();
@@ -235,7 +231,7 @@ public class App {
         int useID = id.intValue();
 
         //Request list of accounts from server using AccID and UserID
-        List<Transfer> transferList = transferService.getTransferTransactions(useID, accId);
+        List<Transfer> transferList = transferService.getTransferTransactions(useID, getAccountId());
 
         //check if list is empty, if so print empty history report
         if (transferList.isEmpty()) {
@@ -248,14 +244,10 @@ public class App {
             consoleService.printHistoryHeader();
             for (Transfer transfer : transferList) {
                 if (transfer.getAmount() != null && transfer.getStatusId() == historyType) {
-                    boolean isFrom = (transfer.getAccountFrom() == accId);
-                    name = accountService.findUserNameByAccountId(((isFrom) ? transfer.getAccountTo() : transfer.getAccountFrom()));
-                    System.out.println("this is the "+name);
-                    for (Account accounts : account) {
-                        accId = accounts.getAccountId();
-                    }
+                    boolean isFrom = isFrom(transfer,getAccountId());
+                    name = accountService.findUserNameByAccountId(((isFrom) ? transfer.getAccountFrom() : transfer.getAccountTo()));
                     status = convertStatus(transfer.getStatusId());
-                    consoleService.printTransHistory(transfer.getId(),((isFrom) ? transfer.getAccountTo() : transfer.getAccountFrom()),
+                    consoleService.printTransHistory(transfer.getId(),name,
                             transfer.getAmount(), status, isFrom);
                 }
             }
@@ -265,20 +257,75 @@ public class App {
 
     private void transferMenu(int historySelection) {
         int userInput = -1;
+
         while (userInput != 0) {
+
+
             //Calls the Fetch History helper method, ask which history we are looking for;
             List<Transfer> transferList = fetchHistory(historySelection);
             consoleService.printTransferSelection();
             userInput = consoleService.promptForMenuSelection("Enter Selection: ");
-            Transfer selectedTransfer = transferService.getSelectedTransaction(transferList, userInput);
             if (userInput == 0) {
                 break;
-            } else if (selectedTransfer == null) {
+            }
+            Transfer selectedTransfer = transferService.getSelectedTransaction(transferList, userInput);
+            String fromAccount = accountService.findUserNameByAccountId(selectedTransfer.getAccountFrom());
+
+            if (selectedTransfer == null) {
                 System.out.println("Incorrect Entry please try again");
             } else {
-                consoleService.printTransferDetails(selectedTransfer);
-                consoleService.pause();
+                consoleService.printTransferDetails(selectedTransfer, fromAccount, accountService.findUserNameByAccountId(selectedTransfer.getAccountTo()));
+            }
+            //Checks to see if the transaction is pending, if it is and the user is the account sending funds, prompt to approve
+            if (historySelection == TRANSFER_PENDING && currentUser.getUser().getUsername().equals(fromAccount) ){
+                //promptToApprove
+                consoleService.printPendingMenu();
+                int menuSelection = consoleService.promptForMenuSelection("Please enter your selection: ");
+                if (menuSelection == 1){
+                  //Deposit Money to account
+                    //if its a from, then the other to must be the account ID for the other user
+                    //if its a to, then the other from must be the account ID for the other user
+                    boolean isThisFromOrTo = isFrom(selectedTransfer,getAccountId());
+
+                    int targetAccount = isThisFromOrTo ? selectedTransfer.getAccountTo() : selectedTransfer.getAccountFrom();
+
+                    User targetUser = userService.getUser(userService.getUserByAccountId(targetAccount,isThisFromOrTo,selectedTransfer.getId()));
+                    sendTheBucks(targetUser, currentUser.getUser(),selectedTransfer);
+                    selectedTransfer.setStatusId(TRANSFER_SUCCESS);
+                    transferService.updateTransfer(selectedTransfer);
+
+                } else if (menuSelection == 2){
+                    selectedTransfer.setStatusId(TRANSFER_REJECT);
+                    transferService.updateTransfer(selectedTransfer);
+                } else if (menuSelection == 0) {
+                    break;
+                }
             }
         }
+    }
+    private int getAccountId(){
+        List<Account> account = accountService.getAccounts(currentUser.getUser());
+        int accId = 0;
+        for (Account accounts : account) {
+            accId = accounts.getAccountId();
+        }
+        return accId;
+    }
+
+    private boolean isFrom(Transfer transfer, int accountId){
+        System.out.println("In isFrom: " + transfer.getAccountFrom());
+        System.out.println("In isFrom: " + accountId);
+        return (transfer.getAccountFrom() == accountId);
+    }
+
+    private void sendTheBucks(User targetUser, User sendingUser, Transfer transfer){
+        //DEPOSIT INTO TARGET
+        System.out.println(targetUser.getUsername() + " is getting");
+        transferService.transfer(targetUser, transfer, false);
+        //WITHDRAW FROM USER
+        System.out.println(sendingUser.getUsername() + " is losing");
+        transferService.transfer(sendingUser, transfer, true);
+        System.out.println("TRANSFER APPROVED, MONEY HAS BEEN APPROVED AND SENT.");
+
     }
 }

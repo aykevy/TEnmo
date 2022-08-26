@@ -31,7 +31,10 @@ public class UserController
         return userDao.findByUserId(id);
     }
 
-
+    @RequestMapping(path = "user/account/{accountId}/{transferId}/findUser/{toOrFrom}", method = RequestMethod.GET)
+    public int findUserByAccountId (@PathVariable int accountId, @PathVariable int transferId, @PathVariable String toOrFrom){
+        return userDao.findUserByAccountId(accountId,toOrFrom,transferId);
+    }
 
 
 }

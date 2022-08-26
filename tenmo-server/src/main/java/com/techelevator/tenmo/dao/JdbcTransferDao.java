@@ -33,7 +33,7 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public List<Transfer> getTransferTransactions(int id) {
         List<Transfer> tranfersList = new ArrayList<>();
-        String sql = "SELECT transfer_id, account_from, account_to, amount, transfer_type_id, transfer_status_id " +
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
                 "FROM transfer " +
                 "WHERE (account_from = ? OR account_to = ?)";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
@@ -100,17 +100,29 @@ public class JdbcTransferDao implements TransferDao {
         System.out.println("ROWS AFFECTED: " + rowsUpdated);
     }
 
+    @Override
+    public void update(Transfer transfer){
+        String sql = "UPDATE transfer SET transfer_status_id = ? WHERE transfer_id = ?";
+        int rowsUpdated = jdbcTemplate.update(sql,transfer.getStatusId(),transfer.getId());
+    }
+
     /*
         Helper method that maps the row set data into a transfer object.
      */
     public Transfer mapTransferRowSet(SqlRowSet rs){
         Transfer transfer = new Transfer();
         transfer.setId(rs.getInt("transfer_id"));
+        System.out.println("transfer id" + rs.getInt("transfer_id"));
         transfer.setTypeId(rs.getInt("transfer_type_id"));
+        System.out.println("type id "+ rs.getInt("transfer_type_id"));
         transfer.setStatusId(rs.getInt("transfer_status_id"));
+        System.out.println("status id "+  rs.getInt("transfer_status_id"));
         transfer.setAccountFrom(rs.getInt("account_from"));
+        System.out.println("account from "+ rs.getInt("account_from"));
         transfer.setAccountTo(rs.getInt("account_to"));
+        System.out.println("account to "+ rs.getInt("account_to"));
         transfer.setAmount(rs.getBigDecimal("amount"));
+        System.out.println("amount "+  rs.getBigDecimal("amount"));
         return transfer;
     }
 }
