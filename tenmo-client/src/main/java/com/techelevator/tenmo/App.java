@@ -135,8 +135,7 @@ public class App {
 
         //Here we create and document this transfer and add to database.
         Transfer transfer = transferService.createNewTransfer(transferTypeId,statusTypeId, userAccount.getAccountId(),transferAccount.getAccountId(),answerAmount);
-        Transfer transferWithGeneratedID = transferService.add(transfer);
-        return transferWithGeneratedID;
+        return transferService.add(transfer);
     }
 
 
@@ -146,20 +145,16 @@ public class App {
         consoleService.getUserList(userService.getUsers(), currentUser.getUser());
         try {
             int enteredId = -1;
-            while (enteredId == -1)
-            {
+            while (enteredId == -1) {
                 enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
                 enteredId = userService.getVerifiedId(enteredId, currentUser.getUser().getId());
             }
             BigDecimal answerAmount = BigDecimal.ZERO;
-            while (answerAmount.equals(BigDecimal.ZERO))
-            {
+            while (answerAmount.equals(BigDecimal.ZERO)) {
                 answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
                 answerAmount = accountService.getVerifiedAmount(answerAmount);
                 BigDecimal userBalance = accountService.getAccounts(currentUser.getUser()).get(0).getBalance();
                 answerAmount = accountService.getVerifiedBalance(answerAmount, userBalance);
-            }
-                sendTheBucks(userService.getUser(enteredId),currentUser.getUser(),transferWithId);
             }
 
             Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_SUCCESS, TRANSFER_SEND);
@@ -169,6 +164,7 @@ public class App {
         } catch (Exception e) {
             System.out.println("Invalid input. Try Again.");
         }
+    }
 
 
 	private void requestBucks()
