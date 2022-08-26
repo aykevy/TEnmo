@@ -29,28 +29,28 @@ public class ConsoleService {
     }
 
     public void printGreeting() {
-        System.out.println("*********************");
-        System.out.println("* Welcome to TEnmo! *");
-        System.out.println("*********************");
+        System.out.println("---------------------------------------------------");
+        System.out.println("                Welcome to TEnmo!                  ");
+        System.out.println("---------------------------------------------------");
     }
 
     public void printLoginMenu() {
-        System.out.println();
+        System.out.println("---------------------------------------------------");
         System.out.println("1: Register");
         System.out.println("2: Login");
         System.out.println("0: Exit");
-        System.out.println();
+        System.out.println("---------------------------------------------------");
     }
 
     public void printMainMenu() {
-        System.out.println();
+        System.out.println("---------------------------------------------------");
         System.out.println("1: View your current balance");
         System.out.println("2: View your past transfers");
         System.out.println("3: View your pending requests");
         System.out.println("4: Send TE bucks");
         System.out.println("5: Request TE bucks");
         System.out.println("0: Exit");
-        System.out.println();
+        System.out.println("---------------------------------------------------");
     }
 
     public void printAvailableAccounts(List<Account> accounts) {
@@ -64,12 +64,12 @@ public class ConsoleService {
     }
 
     public void displayBalanceForAccount(Account account) {
-        String accountPrint = "*Account Number: " + account.getAccountId()+ "*";
-        String balancePrint = "*Total Balance: " + account.getBalance() + "*";
-        printStars(accountPrint, balancePrint);
+        String accountPrint = "Account Number: " + account.getAccountId();
+        String balancePrint = "Total Balance: " + account.getBalance();
+        System.out.println("---------------------------------------------------");
         System.out.println(accountPrint);
         System.out.println(balancePrint);
-        printStars(accountPrint, balancePrint);
+        System.out.println("---------------------------------------------------");
     }
 
     public UserCredentials promptForCredentials() {
@@ -112,9 +112,9 @@ public class ConsoleService {
     public void getUserList(List<User> users)
     {
         List<Integer> userIds = new ArrayList<>();
-
-        System.out.println("Users ID        User Name");
-        System.out.println("------------------------------");
+        System.out.println("---------------------------------------------------");
+        System.out.println(" Users ID                                User Name ");
+        System.out.println("---------------------------------------------------");
         for (User user : users)
         {
             System.out.println(user.getId() + "          " + user.getUsername());
@@ -122,13 +122,11 @@ public class ConsoleService {
         }
     }
     public void printTransHistory(int id, String name, BigDecimal amount,String status, Boolean isFrom){
-        //System.out.println("IsFrom");
+        //Formatted print using isFrom logic to determine which line to print.
         if (isFrom) {
             System.out.printf("%4d         To:%-9s      $%.2f    %s\n",id,name,amount,status);
-            //System.out.println(id + "  " + "        To: " + name +"\t"+ "         $ " + amount+ "   "+ status);
         } else{
             System.out.printf("%4d       From:%-9s      $%.2f    %s\n",id,name,amount,status);
-           // System.out.println(id + "  " + "      From: " + name + "\t" +"         $ " + amount+ "   "+ status);
         }
     }
 
@@ -154,15 +152,18 @@ public class ConsoleService {
         System.out.println("--------------------------------------------------");
     }
     public void printTransferDetails(Transfer transfer,String userNameFrom, String userNameTo){
-
+            //Transfer Header
             System.out.println("--------------------------------------------------");
             System.out.println("--------------- Transfer Details -----------------");
             System.out.println("--------------------------------------------------");
+
+            //Printing based on parameters recieved from method.
             System.out.println("ID: " + transfer.getId());
             System.out.println("From: " + userNameFrom);
             System.out.println("To: " + userNameTo);
             System.out.println("Transfer type: " + (transfer.getTypeId() == 1 ? "Request" : "Send"));
 
+            //Check the transfer status, and print correct information.
             if (transfer.getStatusId() == 3){
                 System.out.println("Status: Rejected");
             }else{
@@ -173,6 +174,7 @@ public class ConsoleService {
             System.out.println("--------------------------------------------------");
         }
         public void printPendingMenu(){
+        //Pending menu approval/decline options
             System.out.println("--------------------------------------------------");
             System.out.println("1. Approve                                        ");
             System.out.println("2. Decline                                        ");
@@ -180,24 +182,4 @@ public class ConsoleService {
             System.out.println("--------------------------------------------------");
         }
 
-    private void printStars(String account, String balance) {
-        if (account.length() > balance.length()) {
-            for (int i = 0; i < account.length()+1; i++) {
-                if (i == account.length()) {
-                    System.out.println("*");
-                } else {
-                    System.out.print("*");
-                }
-
-            }
-        } else {
-            for (int i = 0; i < balance.length()+1; i++) {
-                if (i == balance.length()) {
-                    System.out.println("*");
-                } else {
-                    System.out.print("*");
-                }
-            }
-        }
-    }
 }

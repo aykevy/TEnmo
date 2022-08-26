@@ -16,18 +16,18 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
+    //Initializing app services
     private AuthenticatedUser currentUser;
     private final AccountService accountService = new AccountService();
+    private final UserService userService = new UserService();
+    private final TransferService transferService = new TransferService();
+
+    //Private variables for the app
     private final int TRANSFER_PENDING = 1;
     private final int TRANSFER_SUCCESS = 2;
     private final int TRANSFER_REJECT = 3;
-    final int TRANSFER_SEND = 2;
-    final int TRANSFER_REQUEST =1;
-    //new
-    private final UserService userService = new UserService();
-
-    //new
-    private final TransferService transferService = new TransferService();
+    private final int TRANSFER_SEND = 2;
+    private final int TRANSFER_REQUEST =1;
 
     public static void main(String[] args) {
         App app = new App();
@@ -162,12 +162,6 @@ public class App {
                 Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_SUCCESS, TRANSFER_SEND);
 
                 sendTheBucks(userService.getUser(enteredId),currentUser.getUser(),transferWithId);
-//                //Actual Sending Portion
-//                //DEPOSIT INTO TARGET
-//                transferService.transfer(userService.getUser(enteredId), transferWithId, false);
-//                //WITHDRAW FROM USER
-//                transferService.transfer(currentUser.getUser(), transferWithId, true);
-//                System.out.print("TRANSFER CREATED, MONEY HAS BEEN AUTOMATICALLY APPROVED AND SENT.");
             }
         }
         catch(Exception e)
@@ -282,7 +276,8 @@ public class App {
                 consoleService.printPendingMenu();
                 int menuSelection = consoleService.promptForMenuSelection("Please enter your selection: ");
                 if (menuSelection == 1){
-                  //Deposit Money to account
+
+                    //Deposit Money to account
                     //if its a from, then the other to must be the account ID for the other user
                     //if its a to, then the other from must be the account ID for the other user
                     boolean isThisFromOrTo = isFrom(selectedTransfer,getAccountId());
@@ -304,6 +299,7 @@ public class App {
         }
     }
     private int getAccountId(){
+        //Method to pull list of accounts, currently no accounts have multiple, but available for future expansion if needed.
         List<Account> account = accountService.getAccounts(currentUser.getUser());
         int accId = 0;
         for (Account accounts : account) {
@@ -313,8 +309,7 @@ public class App {
     }
 
     private boolean isFrom(Transfer transfer, int accountId){
-        //System.out.println("In isFrom: " + transfer.getAccountFrom());
-        //System.out.println("In isFrom: " + accountId);
+        //Checks to see if the account given is the fromAccount in the Transfer, if so returns True.
         return (transfer.getAccountFrom() == accountId);
     }
 
