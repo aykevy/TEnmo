@@ -119,15 +119,9 @@ public class App {
         transferMenu(TRANSFER_SUCCESS);
     }
 
-
-    private void approveRequests()
-    {
-        //After viewing your pending requests, you may approve requests here
-        //1 - UPDATE THAT THE STATUS HAS BEEN RECEIVED
-        //2 - IF ACCEPT, do the actual sending AND CHANGE CODE FROM PENDING TO APPROVED
-        //3 - IF REJECT, do NO sending AND CHANGE CODE FROM PENDIGN TO REJECT
-    }
-
+    /*
+        Helper for generating the id for a transfer and returns a transfer.
+     */
     private Transfer generateTransferWithId(int enteredId, BigDecimal answerAmount, int transferTypeId, int statusTypeId)
     {
         //Current User Account, currentUser = AuthenticatedUser
@@ -145,32 +139,32 @@ public class App {
         return transferWithGeneratedID;
     }
 
+
+
 	private void sendBucks() {
         //Prompt user to pick a transfer to from list.
-        consoleService.getUserList(userService.getUsers());
-        try
-        {
-            int enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
-            if (enteredId == currentUser.getUser().getId())
+        consoleService.getUserList(userService.getUsers(), currentUser.getUser());
+        try {
+            int enteredId = -1;
+            while (enteredId == -1)
             {
-                System.out.println("Sorry, you can not send money to yourself. Try Again.");
+                enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
+                enteredId = userService.getVerifiedId(enteredId, currentUser.getUser().getId());
             }
-            else
+            BigDecimal answerAmount = BigDecimal.ZERO;
+            while (answerAmount.equals(BigDecimal.ZERO))
             {
-                //Get a Big Decimal from the user
-                BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
-                Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_SUCCESS, TRANSFER_SEND);
+                answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
+                answerAmount = accountService.getVerifiedAmount(answerAmount);
+                BigDecimal userBalance = accountService.getAccounts(currentUser.getUser()).get(0).getBalance();
+                answerAmount = accountService.getVerifiedBalance(answerAmount, userBalance);
+            }
 
-                sendTheBucks(userService.getUser(enteredId),currentUser.getUser(),transferWithId);
-//                //Actual Sending Portion
-//                //DEPOSIT INTO TARGET
-//                transferService.transfer(userService.getUser(enteredId), transferWithId, false);
-//                //WITHDRAW FROM USER
-//                transferService.transfer(currentUser.getUser(), transferWithId, true);
-//                System.out.print("TRANSFER CREATED, MONEY HAS BEEN AUTOMATICALLY APPROVED AND SENT.");
-            }
+            Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_SUCCESS, TRANSFER_SEND);
+            sendTheBucks(userService.getUser(enteredId), currentUser.getUser(), transferWithId);
+            System.out.print("TRANSFER CREATED, MONEY HAS BEEN SENT.");
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             System.out.println("Invalid input. Try Again.");
         }
@@ -178,18 +172,28 @@ public class App {
 
 	private void requestBucks()
     {
-        consoleService.getUserList(userService.getUsers());
-        int enteredId = consoleService.promptForInt("Enter ID of user you want to request TEBucks from: ");
+        consoleService.getUserList(userService.getUsers(), currentUser.getUser());
         try
         {
-            //Get a Big Decimal from the user
-            BigDecimal answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to request from user " + enteredId + " :");
+            int enteredId = -1;
+            while (enteredId == -1)
+            {
+                enteredId = consoleService.promptForInt("Enter ID of user you want to request TEBucks from: ");
+                enteredId = userService.getVerifiedId(enteredId, currentUser.getUser().getId());
+            }
+            BigDecimal answerAmount = BigDecimal.ZERO;
+            while (answerAmount.equals(BigDecimal.ZERO))
+            {
+                answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to request from user " + enteredId + " :");
+                answerAmount = accountService.getVerifiedAmount(answerAmount);
+            }
+
             Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_PENDING, TRANSFER_REQUEST);
             System.out.print("TRANSFER CREATED, REQUEST HAS BEEN SENT.");
         }
         catch(Exception e)
         {
-            e.getMessage();
+            System.out.println("Invalid input. Try Again.");
         }
 	}
 

@@ -109,7 +109,7 @@ public class ConsoleService {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
     }
-    public void getUserList(List<User> users)
+    public void getUserList(List<User> users, User currentUser)
     {
         List<Integer> userIds = new ArrayList<>();
 
@@ -117,8 +117,11 @@ public class ConsoleService {
         System.out.println("------------------------------");
         for (User user : users)
         {
-            System.out.println(user.getId() + "          " + user.getUsername());
-            userIds.add(Math.toIntExact(user.getId()));
+            if (!user.getId().equals(currentUser.getId()))
+            {
+                System.out.println(user.getId() + "          " + user.getUsername());
+                userIds.add(Math.toIntExact(user.getId()));
+            }
         }
     }
     public void printTransHistory(int id, String name, BigDecimal amount,String status, Boolean isFrom){
