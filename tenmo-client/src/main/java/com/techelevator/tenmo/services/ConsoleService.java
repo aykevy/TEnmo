@@ -124,9 +124,11 @@ public class ConsoleService {
     public void printTransHistory(int id, String name, BigDecimal amount,String status, Boolean isFrom){
         //System.out.println("IsFrom");
         if (isFrom) {
-            System.out.println(id + "  " + "        To: " + name + "         $ " + amount+ "   "+ status);
+            System.out.printf("%4d         To:%-9s      $%.2f    %s\n",id,name,amount,status);
+            //System.out.println(id + "  " + "        To: " + name +"\t"+ "         $ " + amount+ "   "+ status);
         } else{
-            System.out.println(id + "  " + "      From: " + name + "         $ " + amount+ "   "+ status);
+            System.out.printf("%4d       From:%-9s      $%.2f    %s\n",id,name,amount,status);
+           // System.out.println(id + "  " + "      From: " + name + "\t" +"         $ " + amount+ "   "+ status);
         }
     }
 

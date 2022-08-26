@@ -245,7 +245,7 @@ public class App {
             for (Transfer transfer : transferList) {
                 if (transfer.getAmount() != null && transfer.getStatusId() == historyType) {
                     boolean isFrom = isFrom(transfer,getAccountId());
-                    name = accountService.findUserNameByAccountId(((isFrom) ? transfer.getAccountFrom() : transfer.getAccountTo()));
+                    name = accountService.findUserNameByAccountId(((isFrom) ? transfer.getAccountTo():transfer.getAccountFrom()));
                     status = convertStatus(transfer.getStatusId());
                     consoleService.printTransHistory(transfer.getId(),name,
                             transfer.getAmount(), status, isFrom);
@@ -287,7 +287,7 @@ public class App {
                     //if its a to, then the other from must be the account ID for the other user
                     boolean isThisFromOrTo = isFrom(selectedTransfer,getAccountId());
 
-                    int targetAccount = isThisFromOrTo ? selectedTransfer.getAccountTo() : selectedTransfer.getAccountFrom();
+                    int targetAccount = isThisFromOrTo ? selectedTransfer.getAccountTo(): selectedTransfer.getAccountFrom();
 
                     User targetUser = userService.getUser(userService.getUserByAccountId(targetAccount,isThisFromOrTo,selectedTransfer.getId()));
                     sendTheBucks(targetUser, currentUser.getUser(),selectedTransfer);
@@ -313,8 +313,8 @@ public class App {
     }
 
     private boolean isFrom(Transfer transfer, int accountId){
-        System.out.println("In isFrom: " + transfer.getAccountFrom());
-        System.out.println("In isFrom: " + accountId);
+        //System.out.println("In isFrom: " + transfer.getAccountFrom());
+        //System.out.println("In isFrom: " + accountId);
         return (transfer.getAccountFrom() == accountId);
     }
 
