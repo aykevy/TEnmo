@@ -39,4 +39,14 @@ public class UserService
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new HttpEntity<>(user, headers);
     }
+
+    public int getVerifiedId(int enteredId, Long userId)
+    {
+        if ((long)enteredId == userId)
+        {
+            System.out.println("Sorry, you can not select yourself. Transfer aborted, please try Again.");
+            return -1;
+        }
+        return enteredId;
+    }
 }

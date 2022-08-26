@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,6 +51,26 @@ public class AccountService {
         return accounts.size() > 1;
     }
 
+    public BigDecimal getVerifiedAmount(BigDecimal enteredAmount)
+    {
+        if (enteredAmount.compareTo(BigDecimal.ZERO) != 1)
+        {
+            System.out.println("Sorry, you can not enter a negative or zero. Transfer aborted, please try again.");
+            return BigDecimal.ZERO;
+        }
+        return enteredAmount;
+    }
+
+    public BigDecimal getVerifiedBalance(BigDecimal enteredAmount, BigDecimal userBalance)
+    {
+        if (enteredAmount.compareTo(userBalance) == 1)
+        {
+            System.out.println("Sorry, you can not enter more than your balance. Transfer aborted, please try again.");
+            return BigDecimal.ZERO;
+        }
+        return enteredAmount;
+
+    }
 
 
 }
