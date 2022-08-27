@@ -113,7 +113,7 @@ public class ConsoleService {
     {
         List<Integer> userIds = new ArrayList<>();
         System.out.println("---------------------------------------------------");
-        System.out.println(" Users ID                                User Name ");
+        System.out.println(" Users ID     User Name ");
         System.out.println("---------------------------------------------------");
         for (User user : users)
         {
@@ -127,9 +127,9 @@ public class ConsoleService {
     public void printTransHistory(int id, String name, BigDecimal amount,String status, Boolean isFrom){
         //Formatted print using isFrom logic to determine which line to print.
         if (isFrom) {
-            System.out.printf("%4d         To:%-9s      $%.2f    %s\n",id,name,amount,status);
+            System.out.printf("%4d         To:%-9s      $%.2f   %10s\n",id,name,amount,status);
         } else{
-            System.out.printf("%4d       From:%-9s      $%.2f    %s\n",id,name,amount,status);
+            System.out.printf("%4d       From:%-9s      $%.2f   %10s\n",id,name,amount,status);
         }
     }
 
@@ -140,7 +140,7 @@ public class ConsoleService {
     public void printHistoryHeader(){
         System.out.println("--------------------------------------------------");
         System.out.println("Transfer");
-        System.out.println("ID            From/To           Amount     Status");
+        System.out.println("ID            From/To          Amount      Status");
         System.out.println("--------------------------------------------------");
     }
     public void printEmptyHistory(){
