@@ -154,6 +154,12 @@ public class ConsoleService {
         System.out.println("--------- Press 0 to exit to the main menu -------");
         System.out.println("--------------------------------------------------");
     }
+    public void printRequestSendSelection(){
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------- Press 0 to exit to the main menu -------");
+        System.out.println("--------------------------------------------------");
+    }
+
     public void printTransferDetails(Transfer transfer,String userNameFrom, String userNameTo){
             //Transfer Header
             System.out.println("--------------------------------------------------");

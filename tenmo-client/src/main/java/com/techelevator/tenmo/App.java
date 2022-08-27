@@ -146,9 +146,11 @@ public class App {
         try {
             int enteredId = -1;
             while (enteredId == -1) {
+                consoleService.printRequestSendSelection();
                 enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
                 enteredId = userService.getVerifiedId(enteredId, currentUser.getUser().getId());
             }
+            if (enteredId ==0){return;}
             BigDecimal answerAmount = BigDecimal.ZERO;
             while (answerAmount.equals(BigDecimal.ZERO)) {
                 answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
@@ -175,9 +177,11 @@ public class App {
             int enteredId = -1;
             while (enteredId == -1)
             {
+                consoleService.printRequestSendSelection();
                 enteredId = consoleService.promptForInt("Enter ID of user you want to request TEBucks from: ");
                 enteredId = userService.getVerifiedId(enteredId, currentUser.getUser().getId());
             }
+            if (enteredId ==0){return;}
             BigDecimal answerAmount = BigDecimal.ZERO;
             while (answerAmount.equals(BigDecimal.ZERO))
             {
