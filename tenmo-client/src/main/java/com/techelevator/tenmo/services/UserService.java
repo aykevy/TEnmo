@@ -57,4 +57,9 @@ public class UserService
         return restTemplate.getForObject(BASE_URL + "user/account/" + accountId,String.class);
 
     }
+    public String findUserNameByUserId(int userID){
+        //Gets a specific username based on the accountID provided
+        return restTemplate.getForObject(BASE_URL + userID + "/name" ,String.class);
+
+    }
 }

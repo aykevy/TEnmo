@@ -292,7 +292,7 @@ public class App {
          //Display and request how much we are sending/requesting
          while (answerAmount.equals(BigDecimal.ZERO)){
 
-         answerAmount = consoleService.promptForBigDecimal(isSendBuck ? "How many TEBucks do you want to send to user " + enteredId + ": " :"How many TEBucks do you want to request from user " + enteredId + ": ");
+         answerAmount = consoleService.promptForBigDecimal(isSendBuck ? "How many TEBucks do you want to send to " + userService.findUserNameByUserId(enteredId) + ": " :"How many TEBucks do you want to request from " + userService.findUserNameByUserId(enteredId) + ": ");
            //verify amount of funds if we are sending bucks
             if(isSendBuck) {
                 BigDecimal userBalance = accountService.getAccounts(currentUser.getUser()).get(0).getBalance();
