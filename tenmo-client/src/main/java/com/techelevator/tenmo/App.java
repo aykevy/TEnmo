@@ -88,9 +88,9 @@ public class App {
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
-                sendBucks();
+                obtainTransferDetailsFromUser(TRANSFER_SEND);
             } else if (menuSelection == 5) {
-                requestBucks();
+                obtainTransferDetailsFromUser(TRANSFER_REQUEST);
             } else if (menuSelection == 0) {
                 continue;
             } else {
@@ -137,66 +137,6 @@ public class App {
         Transfer transfer = transferService.createNewTransfer(transferTypeId,statusTypeId, userAccount.getAccountId(),transferAccount.getAccountId(),answerAmount);
         return transferService.add(transfer);
     }
-
-
-
-	private void sendBucks() {
-        //Prompt user to pick a transfer to from list.
-        consoleService.getUserList(userService.getUsers(), currentUser.getUser());
-        try {
-            int enteredId = -1;
-            while (enteredId == -1) {
-                consoleService.printRequestSendSelection();
-                enteredId = consoleService.promptForInt("Enter ID of user you are sending TEBucks to: ");
-                enteredId = userService.getVerifiedId(enteredId, currentUser.getUser().getId());
-            }
-            if (enteredId ==0){return;}
-            BigDecimal answerAmount = BigDecimal.ZERO;
-            while (answerAmount.equals(BigDecimal.ZERO)) {
-                answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to send to user " + enteredId + " :");
-                answerAmount = accountService.getVerifiedAmount(answerAmount);
-                BigDecimal userBalance = accountService.getAccounts(currentUser.getUser()).get(0).getBalance();
-                answerAmount = accountService.getVerifiedBalance(answerAmount, userBalance);
-            }
-
-            Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_SUCCESS, TRANSFER_SEND);
-            sendTheBucks(userService.getUser(enteredId), currentUser.getUser(), transferWithId);
-            System.out.print("TRANSFER CREATED, MONEY HAS BEEN SENT.");
-
-        } catch (Exception e) {
-            System.out.println("Invalid input. Try Again.");
-        }
-    }
-
-
-	private void requestBucks()
-    {
-        consoleService.getUserList(userService.getUsers(), currentUser.getUser());
-        try
-        {
-            int enteredId = -1;
-            while (enteredId == -1)
-            {
-                consoleService.printRequestSendSelection();
-                enteredId = consoleService.promptForInt("Enter ID of user you want to request TEBucks from: ");
-                enteredId = userService.getVerifiedId(enteredId, currentUser.getUser().getId());
-            }
-            if (enteredId ==0){return;}
-            BigDecimal answerAmount = BigDecimal.ZERO;
-            while (answerAmount.equals(BigDecimal.ZERO))
-            {
-                answerAmount = consoleService.promptForBigDecimal("How many TEBucks do you want to request from user " + enteredId + " :");
-                answerAmount = accountService.getVerifiedAmount(answerAmount);
-            }
-
-            Transfer transferWithId = generateTransferWithId(enteredId, answerAmount, TRANSFER_PENDING, TRANSFER_REQUEST);
-            System.out.print("TRANSFER CREATED, REQUEST HAS BEEN SENT.");
-        }
-        catch(Exception e)
-        {
-            System.out.println("Invalid input. Try Again.");
-        }
-	}
 
     private void viewPendingRequests() {
         //Calls the transfer Menu; will print the transfers selected and then prompt to view more details.
@@ -250,7 +190,7 @@ public class App {
             for (Transfer transfer : transferList) {
                 if (transfer.getAmount() != null && transfer.getStatusId() == historyType) {
                     boolean isFrom = isFrom(transfer,getAccountId());
-                    name = accountService.findUserNameByAccountId(((isFrom) ? transfer.getAccountTo():transfer.getAccountFrom()));
+                    name = userService.findUserNameByAccountId(((isFrom) ? transfer.getAccountTo():transfer.getAccountFrom()));
                     status = convertStatus(transfer.getStatusId());
                     consoleService.printTransHistory(transfer.getId(),name,
                             transfer.getAmount(), status, isFrom);
@@ -274,12 +214,12 @@ public class App {
                 break;
             }
             Transfer selectedTransfer = transferService.getSelectedTransaction(transferList, userInput);
-            String fromAccount = accountService.findUserNameByAccountId(selectedTransfer.getAccountFrom());
+            String fromAccount = userService.findUserNameByAccountId(selectedTransfer.getAccountFrom());
 
             if (selectedTransfer == null) {
                 System.out.println("Incorrect Entry please try again");
             } else {
-                consoleService.printTransferDetails(selectedTransfer, fromAccount, accountService.findUserNameByAccountId(selectedTransfer.getAccountTo()));
+                consoleService.printTransferDetails(selectedTransfer, fromAccount, userService.findUserNameByAccountId(selectedTransfer.getAccountTo()));
             }
             //Checks to see if the transaction is pending, if it is and the user is the account sending funds, prompt to approve
             if (historySelection == TRANSFER_PENDING && currentUser.getUser().getUsername().equals(fromAccount) ){
@@ -326,12 +266,52 @@ public class App {
 
     private void sendTheBucks(User targetUser, User sendingUser, Transfer transfer){
         //DEPOSIT INTO TARGET
-        System.out.println(targetUser.getUsername() + " is getting");
         transferService.transfer(targetUser, transfer, false);
         //WITHDRAW FROM USER
-        System.out.println(sendingUser.getUsername() + " is losing");
         transferService.transfer(sendingUser, transfer, true);
-        System.out.println("TRANSFER APPROVED, MONEY HAS BEEN APPROVED AND SENT.");
-
     }
-}
+    private void obtainTransferDetailsFromUser(int transferType){
+        //Check to see if we are sending or requesting bucks.
+         boolean isSendBuck = (transferType == TRANSFER_SEND);
+
+         //print current user list minus current user to window
+         consoleService.getUserList(userService.getUsers(), currentUser.getUser());
+         try{
+         int enteredId = -1;
+         while (enteredId == -1){
+         //display exit option, then request USERID to send or receive bucks from based on input, if userID is invalid will loop
+         consoleService.exitMenuPrompt();
+
+         enteredId = consoleService.promptForInt((isSendBuck ? "Enter ID of user you are sending TEBucks to: " :"Enter ID of user you want to request TEBucks from: "));
+         enteredId = userService.getVerifiedId(enteredId, currentUser.getUser().getId());
+             }
+              if (enteredId ==0){
+                  return;}
+         BigDecimal answerAmount = BigDecimal.ZERO;
+
+         //Display and request how much we are sending/requesting
+         while (answerAmount.equals(BigDecimal.ZERO)){
+
+         answerAmount = consoleService.promptForBigDecimal(isSendBuck ? "How many TEBucks do you want to send to user " + enteredId + ": " :"How many TEBucks do you want to request from user " + enteredId + ": ");
+           //verify amount of funds if we are sending bucks
+            if(isSendBuck) {
+                BigDecimal userBalance = accountService.getAccounts(currentUser.getUser()).get(0).getBalance();
+                answerAmount = accountService.getVerifiedBalance(answerAmount, userBalance);
+            }
+         //verify answer amount
+         answerAmount = accountService.getVerifiedAmount(answerAmount);
+         }
+        //creates new transfer object for transfer
+         Transfer transferWithId = generateTransferWithId(enteredId, answerAmount,isSendBuck ? TRANSFER_SUCCESS : TRANSFER_PENDING, isSendBuck ? TRANSFER_SEND: TRANSFER_REQUEST);
+        //if sending money, sends money now.
+         if (isSendBuck){
+             sendTheBucks(userService.getUser(enteredId), currentUser.getUser(), transferWithId);
+         }
+         consoleService.printTransferCreation(transferWithId.getId(),transferWithId.getStatusId());
+         }
+         catch(Exception e)
+         {
+         System.out.println("Invalid input. Try Again.");
+         }
+         }
+         }

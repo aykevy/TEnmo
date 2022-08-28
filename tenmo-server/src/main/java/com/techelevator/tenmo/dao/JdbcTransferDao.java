@@ -3,7 +3,6 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -103,7 +102,7 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public void update(Transfer transfer){
         String sql = "UPDATE transfer SET transfer_status_id = ? WHERE transfer_id = ?";
-        int rowsUpdated = jdbcTemplate.update(sql,transfer.getStatusId(),transfer.getId());
+        jdbcTemplate.update(sql,transfer.getStatusId(),transfer.getId());
     }
 
     /*
@@ -112,17 +111,11 @@ public class JdbcTransferDao implements TransferDao {
     public Transfer mapTransferRowSet(SqlRowSet rs){
         Transfer transfer = new Transfer();
         transfer.setId(rs.getInt("transfer_id"));
-        System.out.println("transfer id" + rs.getInt("transfer_id"));
         transfer.setTypeId(rs.getInt("transfer_type_id"));
-        System.out.println("type id "+ rs.getInt("transfer_type_id"));
         transfer.setStatusId(rs.getInt("transfer_status_id"));
-        System.out.println("status id "+  rs.getInt("transfer_status_id"));
         transfer.setAccountFrom(rs.getInt("account_from"));
-        System.out.println("account from "+ rs.getInt("account_from"));
         transfer.setAccountTo(rs.getInt("account_to"));
-        System.out.println("account to "+ rs.getInt("account_to"));
         transfer.setAmount(rs.getBigDecimal("amount"));
-        System.out.println("amount "+  rs.getBigDecimal("amount"));
         return transfer;
     }
 }

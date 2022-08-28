@@ -9,7 +9,4 @@ import java.util.List;
 //Generic DAO interface
 public interface AccountDao {
     List<Account> list(int id);
-
-    String findUserNameByAccountId(int id);
-
 }

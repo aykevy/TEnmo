@@ -20,24 +20,17 @@ public class AccountService {
 
     private final String BASE_URL = "http://localhost:8080/";
 
-    //Jacobs First Edit From First Session
+
     public List<Account> getAccounts(User user) {
         //Requests the controller to get information for the specified user in regard to their accounts.
         Account [] result = restTemplate.getForObject(BASE_URL + user.getId(), Account[].class);
         return Arrays.asList(result);
     }
 
-    //Natalie's Edits
     public List<Transfer> getTransactions(User user) {
         //Requests the controller to get information for the specified user in regard to their transfers.
         Transfer [] result = restTemplate.getForObject(BASE_URL + user.getId(),Transfer[].class);
         return Arrays.asList(result);
-    }
-
-   //move this to userServices and update cod
-    public String findUserNameByAccountId(int accountid){
-        return restTemplate.getForObject(BASE_URL + accountid + "/account",String.class);
-
     }
 
     //helper method to create entities.
@@ -48,11 +41,12 @@ public class AccountService {
     }
 
     public boolean hasMultipleAccounts(List<Account> accounts){
+        //method to check for more than 1 account for user, no implementation yet but starting framework
         return accounts.size() > 1;
     }
 
-    public BigDecimal getVerifiedAmount(BigDecimal enteredAmount)
-    {
+    public BigDecimal getVerifiedAmount(BigDecimal enteredAmount){
+        //Verifies amount is not negative or zero, essentially a valid number
         if (enteredAmount.compareTo(BigDecimal.ZERO) != 1)
         {
             System.out.println("Sorry, you can not enter a negative or zero. Transfer aborted, please try again.");
@@ -61,8 +55,8 @@ public class AccountService {
         return enteredAmount;
     }
 
-    public BigDecimal getVerifiedBalance(BigDecimal enteredAmount, BigDecimal userBalance)
-    {
+    public BigDecimal getVerifiedBalance(BigDecimal enteredAmount, BigDecimal userBalance){
+        //Verifies balance in account can cover the withdraw
         if (enteredAmount.compareTo(userBalance) == 1)
         {
             System.out.println("Sorry, you can not enter more than your balance. Transfer aborted, please try again.");

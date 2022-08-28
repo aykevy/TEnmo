@@ -40,13 +40,21 @@ public class UserService
         return new HttpEntity<>(user, headers);
     }
 
-    public int getVerifiedId(int enteredId, Long userId)
-    {
+    public int getVerifiedId(int enteredId, Long userId){
         if ((long)enteredId == userId)
         {
-            System.out.println("Sorry, you can not select yourself. Transfer aborted, please try Again.");
+            System.out.println("--------------------------------------------------");
+            System.out.println("Sorry, you can not select yourself");
+            System.out.println("Please enter a correct user or press 0 to abort transfer");
+            System.out.println("--------------------------------------------------");
             return -1;
         }
         return enteredId;
+    }
+
+    public String findUserNameByAccountId(int accountId){
+        //Gets a specific username based on the accountID provided
+        return restTemplate.getForObject(BASE_URL + "user/account/" + accountId,String.class);
+
     }
 }

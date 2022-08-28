@@ -31,21 +31,19 @@ public class TransferService
 
 
     //Newest Edit Made During Tech Session
-    public boolean transfer(User user, Transfer transfer, boolean isWithdraw)
-    {
+    public boolean transfer(User user, Transfer transfer, boolean isWithdraw){
+        //Check to see if money movement will be a with draw or deposit
         String transferType = isWithdraw ? "withdraw" : "deposit";
+        //create entity
         HttpEntity<Transfer> entity = createEntityTransfer(transfer);
         boolean success = false;
-        try
-        {
-            if (transferType.equals("deposit")){
 
-                System.out.println("Depositing into "+ user.getId()+ ":" + transfer.getAccountTo());
+        //Send request to controller
+        try{
+            if (transferType.equals("deposit")){
                 restTemplate.put(BASE_URL + user.getId() + "/" + transfer.getAccountTo() + "/transfer/" + transferType, entity);
 
             } else if (transferType.equals("withdraw")){
-
-                System.out.println("Withdrawing from "+ user.getId()+ ":" + transfer.getAccountFrom());
                 restTemplate.put(BASE_URL + user.getId() + "/" + transfer.getAccountFrom() + "/transfer/" + transferType, entity);
             }
             success = true;
@@ -57,8 +55,9 @@ public class TransferService
         return success;
     }
 
-    public Transfer add(Transfer newTransfer)
-    {
+    public Transfer add(Transfer newTransfer){
+        //Send request to controller to create new Transfer Object in the DB
+
         HttpEntity<Transfer> entity = createEntityTransfer(newTransfer);
         Transfer returnedTransfer = null;
         try
@@ -72,16 +71,15 @@ public class TransferService
         return returnedTransfer;
     }
 
-    public Transfer createNewTransfer(int tranType, int status, int fromID, int toID, BigDecimal transferAmount)
-    {
+    public Transfer createNewTransfer(int tranType, int status, int fromID, int toID, BigDecimal transferAmount){
+        //Uses information provided to create a new transfer object
         Transfer transfer = new Transfer();
-        //int id will be automatically created
-        //typeId 1 = request, 2 = receive
-        //statusId, 1 = pending, 2 = approved, 3 = rejected
         transfer.setTypeId(tranType);
         transfer.setStatusId(status);
         transfer.setAccountFrom(fromID);
         transfer.setAccountTo(toID);
+
+        //Sets the accounts from/to based on transfer type - receiving or sending
         if (tranType == TRANSFER_SEND){
             transfer.setAccountFrom(fromID);
             transfer.setAccountTo(toID);
@@ -94,6 +92,7 @@ public class TransferService
     }
 
     public boolean updateTransfer (Transfer transfer){
+        //calls the controller to update a specific transfer
        boolean success = false;
        try {
            restTemplate.put(BASE_URL + "transfer/" + transfer.getId() + "/", createEntityTransfer(transfer), Transfer.class);
@@ -105,10 +104,12 @@ public class TransferService
     }
 
     public List<Transfer> getTransferTransactions(int useId, int accId) {
+        //calls the controller for a list of transfers meeting UserID and AccID - AccID used for future multiple accounts need.
         Transfer[]  result = restTemplate.getForObject(BASE_URL + useId+"/"+ accId+"/transfer", Transfer[].class);
         return Arrays.asList(result);
     }
     public Transfer getSelectedTransaction(List<Transfer> transferList, int tranID){
+        //Calls the controller for a specific transfer.
         for (Transfer transfer : transferList) {
             if (transfer.getId() == tranID){
                 return transfer;

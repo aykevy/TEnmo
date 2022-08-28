@@ -138,35 +138,44 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
     public void printHistoryHeader(){
+        System.out.println();
         System.out.println("--------------------------------------------------");
         System.out.println("Transfer");
         System.out.println("ID            From/To          Amount      Status");
         System.out.println("--------------------------------------------------");
     }
     public void printEmptyHistory(){
+        System.out.println();
         System.out.println("--------------------------------------------------");
         System.out.println("       No current transfers in the system         ");
         System.out.println("--------------------------------------------------");
+        System.out.println();
     }
     public void printTransferSelection(){
+        System.out.println();
         System.out.println("--------------------------------------------------");
         System.out.println("---- Enter a transfer ID to view more details ----");
         System.out.println("--------- Press 0 to exit to the main menu -------");
         System.out.println("--------------------------------------------------");
+        System.out.println();
     }
-    public void printRequestSendSelection(){
+    public void exitMenuPrompt(){
+        System.out.println();
         System.out.println("--------------------------------------------------");
         System.out.println("--------- Press 0 to exit to the main menu -------");
         System.out.println("--------------------------------------------------");
+        System.out.println();
+
     }
 
     public void printTransferDetails(Transfer transfer,String userNameFrom, String userNameTo){
             //Transfer Header
+            System.out.println();
             System.out.println("--------------------------------------------------");
             System.out.println("--------------- Transfer Details -----------------");
             System.out.println("--------------------------------------------------");
 
-            //Printing based on parameters recieved from method.
+            //Printing based on parameters received from method.
             System.out.println("ID: " + transfer.getId());
             System.out.println("From: " + userNameFrom);
             System.out.println("To: " + userNameTo);
@@ -190,5 +199,14 @@ public class ConsoleService {
             System.out.println("0. Exit                                           ");
             System.out.println("--------------------------------------------------");
         }
+
+    public void printTransferCreation(int transferId,int statusId){
+        //Menu printed on creation of transfer
+        System.out.println("--------------------------------------------------");
+        System.out.println((statusId == 1) ? "Transfer successfully created" : "Transfer successful, funds have been sent");
+        System.out.println("Confirmation number: " + transferId);
+        System.out.println("Current Status: " +  (statusId == 1 ? "Pending" : "Approved"));
+        System.out.println("--------------------------------------------------");
+    }
 
 }
