@@ -190,7 +190,7 @@ public class App {
             for (Transfer transfer : transferList) {
                 if (transfer.getAmount() != null && transfer.getStatusId() == historyType) {
                     boolean isFrom = isFrom(transfer,getAccountId());
-                    name = userService.findUserNameByAccountId(((isFrom) ? transfer.getAccountTo():transfer.getAccountFrom()));
+                    name = userService.findUserNameByAccountId(((isFrom) ? transfer.getAccountTo() : transfer.getAccountFrom()));
                     status = convertStatus(transfer.getStatusId());
                     consoleService.printTransHistory(transfer.getId(),name,
                             transfer.getAmount(), status, isFrom);

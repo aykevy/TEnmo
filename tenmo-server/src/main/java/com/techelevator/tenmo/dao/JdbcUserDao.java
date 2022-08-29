@@ -130,7 +130,7 @@ public class JdbcUserDao implements UserDao {
     @Override
     public String findUserNameByAccountId(int id) {
         String username = "";
-        String sql = "SELECT username FROM tenmo_user as a" +
+        String sql = "SELECT username, account_id, a.user_id FROM account as a" +
                 " JOIN tenmo_user using (user_id) WHERE account_id = ? ";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
         //As long as there were results, add to list to be returned.
